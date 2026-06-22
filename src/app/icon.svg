@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="8" fill="#c17a5a"/>
+  <!-- ear straps -->
+  <path d="M5.5 14 Q4 16 5 19" stroke="#e8c4a8" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M26.5 14 Q28 16 27 19" stroke="#e8c4a8" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- mask body -->
+  <ellipse cx="16" cy="18" rx="10.5" ry="8.5" fill="#faf6f1"/>
+  <!-- blush -->
+  <ellipse cx="9.5" cy="20" rx="2.8" ry="1.6" fill="#f4a0a0" opacity="0.45"/>
+  <ellipse cx="22.5" cy="20" rx="2.8" ry="1.6" fill="#f4a0a0" opacity="0.45"/>
+  <!-- left closed crescent eye -->
+  <path d="M9.5 16 Q11.5 13.2 13.5 16" stroke="#c17a5a" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+  <!-- right closed crescent eye -->
+  <path d="M18.5 16 Q20.5 13.2 22.5 16" stroke="#c17a5a" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+  <!-- smile -->
+  <path d="M12.5 21.5 Q16 25 19.5 21.5" stroke="#c17a5a" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+  <!-- sparkle star top-right -->
+  <path d="M25 6 L25.5 7.5 L27 8 L25.5 8.5 L25 10 L24.5 8.5 L23 8 L24.5 7.5 Z" fill="white" opacity="0.8"/>
+</svg>

@@ -1,0 +1,717 @@
+[
+  {
+    "id": "1",
+    "name": "Aloe Soothing Mask",
+    "slug": "aloe-soothing-mask",
+    "tagline": "Nature's Cooling Embrace",
+    "price": 2,
+    "originalPrice": null,
+    "rating": 0,
+    "reviewCount": 0,
+    "category": "Sheet",
+    "badge": null,
+    "description": "Infused with pure aloe vera extract, this soothing sheet mask calms redness, reduces irritation, and delivers a rush of cool hydration. Perfect after sun exposure or whenever your skin needs a gentle reset.",
+    "ingredients": [
+      "Aloe Vera Leaf Extract (98%)",
+      "Centella Asiatica",
+      "Allantoin",
+      "Glycerin",
+      "Panthenol",
+      "Green Tea Extract"
+    ],
+    "skinType": [
+      "Sensitive",
+      "Dry",
+      "Irritated",
+      "All Skin Types"
+    ],
+    "howToUse": "Cleanse face. Apply mask and leave on 15\u201320 min. Remove and pat remaining essence in. No rinsing needed.",
+    "image": "/images/aloe-mask.jpg",
+    "images": [
+      "/images/aloe-mask.jpg"
+    ],
+    "inStock": true,
+    "quantity": 999,
+    "packSize": 1,
+    "iconType": "aloe",
+    "cardColor": "#d4f0e8",
+    "brand": "Vespro"
+  },
+  {
+    "id": "2",
+    "name": "Pearl Purifying Mask",
+    "slug": "pearl-purifying-mask",
+    "tagline": "Pearl Luminescence Mask",
+    "price": 2.5,
+    "originalPrice": null,
+    "rating": 0,
+    "reviewCount": 0,
+    "category": "Sheet",
+    "badge": "New",
+    "description": "Powered by pearl extract and niacinamide, this luminescence mask brightens dull skin and minimizes pores. Pearl powder has been used for centuries to achieve a porcelain, lit-from-within glow.",
+    "ingredients": [
+      "Pearl Extract",
+      "Niacinamide",
+      "Hyaluronic Acid",
+      "Glycerin",
+      "Licorice Root Extract",
+      "Vitamin C"
+    ],
+    "skinType": [
+      "Dull Skin",
+      "Normal",
+      "Combination",
+      "All Skin Types"
+    ],
+    "howToUse": "Cleanse face. Apply mask and leave on 15\u201320 min. Remove and pat remaining essence in. No rinsing needed.",
+    "image": "/images/pearl-mask.jpg",
+    "images": [
+      "/images/pearl-mask.jpg"
+    ],
+    "inStock": true,
+    "quantity": 999,
+    "packSize": 1,
+    "iconType": "pearl",
+    "cardColor": "#e8f4f8",
+    "brand": "Vespro"
+  },
+  {
+    "id": "3",
+    "name": "Collagen Lifting Mask",
+    "slug": "collagen-lifting-mask",
+    "tagline": "Drench Your Skin in Collagen",
+    "price": 2,
+    "originalPrice": null,
+    "rating": 0,
+    "reviewCount": 0,
+    "category": "Sheet",
+    "badge": "Best Seller",
+    "description": "Drench your skin in hydrolyzed collagen peptides that visibly firm, plump, and smooth fine lines. This deeply moisturizing mask restores skin's elasticity and leaves it feeling bouncy and youthful.",
+    "ingredients": [
+      "Hydrolyzed Collagen",
+      "Hyaluronic Acid",
+      "Elastin",
+      "Glycerin",
+      "Peptides",
+      "Allantoin"
+    ],
+    "skinType": [
+      "Dry",
+      "Mature",
+      "Normal",
+      "All Skin Types"
+    ],
+    "howToUse": "Cleanse face. Apply mask and leave on 15\u201320 min. Remove and pat remaining essence in. No rinsing needed.",
+    "image": "/images/collagen-mask.jpg",
+    "images": [
+      "/images/collagen-mask.jpg"
+    ],
+    "inStock": true,
+    "quantity": 999,
+    "packSize": 1,
+    "iconType": "collagen",
+    "cardColor": "#fce4ec",
+    "brand": "Vespro"
+  },
+  {
+    "id": "4",
+    "name": "Seaweed Balancing Mask",
+    "slug": "seaweed-balancing-mask",
+    "tagline": "Ocean's Skin Purifying Secret",
+    "price": 2,
+    "originalPrice": null,
+    "rating": 0,
+    "reviewCount": 0,
+    "category": "Sheet",
+    "badge": null,
+    "description": "Harvested from the deep ocean, seaweed extract is rich in minerals that balance oil production and deeply purify pores. This mask mattifies shine, tightens pores, and leaves oily and combination skin feeling fresh.",
+    "ingredients": [
+      "Seaweed Extract",
+      "Sea Kelp",
+      "Niacinamide",
+      "Zinc PCA",
+      "Salicylic Acid",
+      "Witch Hazel"
+    ],
+    "skinType": [
+      "Oily",
+      "Combination",
+      "Acne-prone",
+      "Normal"
+    ],
+    "howToUse": "Cleanse face. Apply mask and leave on 15\u201320 min. Remove and pat remaining essence in. No rinsing needed.",
+    "image": "/images/seaweed-mask.jpg",
+    "images": [
+      "/images/seaweed-mask.jpg"
+    ],
+    "inStock": true,
+    "quantity": 999,
+    "packSize": 1,
+    "iconType": "seaweed",
+    "cardColor": "#e8f5e9",
+    "brand": "Vespro"
+  },
+  {
+    "id": "5",
+    "name": "Blueberry Revitalizing Mask",
+    "slug": "blueberry-revitalizing-mask",
+    "tagline": "Berry Powerful Skin Revival",
+    "price": 2,
+    "originalPrice": null,
+    "rating": 0,
+    "reviewCount": 0,
+    "category": "Sheet",
+    "badge": null,
+    "description": "Bursting with blueberry antioxidants, this revitalizing mask fights free radicals, reduces oxidative stress, and brings tired skin back to life. The result: refreshed, energized skin with a healthy berry-bright glow.",
+    "ingredients": [
+      "Blueberry Extract",
+      "Resveratrol",
+      "Vitamin C",
+      "Vitamin E",
+      "Hyaluronic Acid",
+      "Glycerin"
+    ],
+    "skinType": [
+      "Dull Skin",
+      "Normal",
+      "Combination",
+      "All Skin Types"
+    ],
+    "howToUse": "Cleanse face. Apply mask and leave on 15\u201320 min. Remove and pat remaining essence in. No rinsing needed.",
+    "image": "/images/blueberry-mask.jpg",
+    "images": [
+      "/images/blueberry-mask.jpg"
+    ],
+    "inStock": true,
+    "quantity": 999,
+    "packSize": 1,
+    "iconType": "blueberry",
+    "cardColor": "#ede7f6",
+    "brand": "Vespro"
+  },
+  {
+    "id": "6",
+    "name": "Hyaluronic Acid Hydrating Mask",
+    "slug": "hyaluronic-acid-hydrating-mask",
+    "tagline": "The Ultimate Moisture Surge",
+    "price": 2,
+    "originalPrice": null,
+    "rating": 0,
+    "reviewCount": 0,
+    "category": "Sheet",
+    "badge": "Staff Pick",
+    "description": "Triple-weight hyaluronic acid floods every layer of the skin with intense moisture, leaving it visibly plumper and smoother after just one use. This is the ultimate hydration boost for dehydrated, parched skin.",
+    "ingredients": [
+      "Triple-Weight Hyaluronic Acid",
+      "Sodium Hyaluronate",
+      "Glycerin",
+      "Panthenol",
+      "Allantoin",
+      "Ceramides"
+    ],
+    "skinType": [
+      "Dry",
+      "Dehydrated",
+      "Normal",
+      "All Skin Types"
+    ],
+    "howToUse": "Cleanse face. Apply mask and leave on 15\u201320 min. Remove and pat remaining essence in. No rinsing needed.",
+    "image": "/images/hyaluronic-mask.jpg",
+    "images": [
+      "/images/hyaluronic-mask.jpg"
+    ],
+    "inStock": true,
+    "quantity": 999,
+    "packSize": 1,
+    "iconType": "hyaluronic",
+    "cardColor": "#e3f2fd",
+    "brand": "Vespro"
+  },
+  {
+    "id": "7",
+    "name": "Lemon Glowing Mask",
+    "slug": "lemon-glowing-mask",
+    "tagline": "Skin's Powerful Vitamin",
+    "price": 2,
+    "originalPrice": null,
+    "rating": 0,
+    "reviewCount": 0,
+    "category": "Sheet",
+    "badge": "New",
+    "description": "Packed with lemon extract and vitamin C, this brightening mask fades dark spots, evens skin tone, and delivers a radiant citrus-fresh glow. Natural AHAs gently exfoliate while antioxidants protect against environmental damage.",
+    "ingredients": [
+      "Lemon Extract",
+      "Vitamin C (L-Ascorbic Acid)",
+      "Niacinamide",
+      "AHA Complex",
+      "Glycerin",
+      "Licorice Root Extract"
+    ],
+    "skinType": [
+      "Dull Skin",
+      "Hyperpigmented",
+      "Normal",
+      "Combination"
+    ],
+    "howToUse": "Cleanse face. Apply mask and leave on 15\u201320 min. Remove and pat remaining essence in. No rinsing needed.",
+    "image": "/images/lemon-mask.jpg",
+    "images": [
+      "/images/lemon-mask.jpg"
+    ],
+    "inStock": true,
+    "quantity": 999,
+    "packSize": 1,
+    "iconType": "lemon",
+    "cardColor": "#fffde7",
+    "brand": "Vespro"
+  },
+  {
+    "id": "8",
+    "name": "Honey Nourishing Mask",
+    "slug": "honey-nourishing-mask",
+    "tagline": "Golden Honey Nectar Mask",
+    "price": 2.25,
+    "originalPrice": null,
+    "rating": 0,
+    "reviewCount": 0,
+    "category": "Sheet",
+    "badge": null,
+    "description": "Pure golden honey provides deep nourishment and antibacterial care while locking in moisture for hours. This rich, comforting mask transforms rough, dry skin into a soft, supple honey-kissed canvas.",
+    "ingredients": [
+      "Honey Extract",
+      "Royal Jelly",
+      "Propolis",
+      "Hyaluronic Acid",
+      "Glycerin",
+      "Beeswax Extract"
+    ],
+    "skinType": [
+      "Dry",
+      "Sensitive",
+      "Dull Skin",
+      "All Skin Types"
+    ],
+    "howToUse": "Cleanse face. Apply mask and leave on 15\u201320 min. Remove and pat remaining essence in. No rinsing needed.",
+    "image": "/images/honey-mask.jpg",
+    "images": [
+      "/images/honey-mask.jpg"
+    ],
+    "inStock": true,
+    "quantity": 999,
+    "packSize": 1,
+    "iconType": "honey",
+    "cardColor": "#fff8e1",
+    "brand": "Vespro"
+  },
+  {
+    "id": "9",
+    "name": "Chamomile Calming Mask",
+    "slug": "chamomile-calming-mask",
+    "tagline": "Nature's Hug for Stressed Skin",
+    "price": 2,
+    "originalPrice": null,
+    "rating": 0,
+    "reviewCount": 0,
+    "category": "Sheet",
+    "badge": null,
+    "description": "Gentle chamomile flower extract wraps stressed skin in its natural calming embrace, reducing redness and inflammation overnight. Like a warm cup of tea for your face \u2014 deeply soothing and utterly comforting.",
+    "ingredients": [
+      "Chamomile Flower Extract",
+      "Bisabolol",
+      "Allantoin",
+      "Centella Asiatica",
+      "Glycerin",
+      "Panthenol"
+    ],
+    "skinType": [
+      "Sensitive",
+      "Redness-prone",
+      "Dry",
+      "All Skin Types"
+    ],
+    "howToUse": "Cleanse face. Apply mask and leave on 15\u201320 min. Remove and pat remaining essence in. No rinsing needed.",
+    "image": "/images/chamomile-mask.jpg",
+    "images": [
+      "/images/chamomile-mask.jpg"
+    ],
+    "inStock": true,
+    "quantity": 999,
+    "packSize": 1,
+    "iconType": "chamomile",
+    "cardColor": "#f9fbe7",
+    "brand": "Vespro"
+  },
+  {
+    "id": "10",
+    "name": "Rose Rejuvenating Mask",
+    "slug": "rose-rejuvenating-mask",
+    "tagline": "Skin's Romantic Getaway",
+    "price": 2.5,
+    "originalPrice": null,
+    "rating": 0,
+    "reviewCount": 0,
+    "category": "Sheet",
+    "badge": "Best Seller",
+    "description": "Luxurious rose extract and rosehip oil work in harmony to rejuvenate, brighten, and hydrate for a petal-soft complexion. This romantic botanical mask leaves skin glowing with a natural rosy radiance.",
+    "ingredients": [
+      "Rose Flower Extract",
+      "Rosehip Oil",
+      "Rose Water",
+      "Vitamin C",
+      "Glycerin",
+      "Hyaluronic Acid"
+    ],
+    "skinType": [
+      "Dry",
+      "Normal",
+      "Dull Skin",
+      "All Skin Types"
+    ],
+    "howToUse": "Cleanse face. Apply mask and leave on 15\u201320 min. Remove and pat remaining essence in. No rinsing needed.",
+    "image": "/images/rose-mask.jpg",
+    "images": [
+      "/images/rose-mask.jpg"
+    ],
+    "inStock": true,
+    "quantity": 999,
+    "packSize": 1,
+    "iconType": "rose",
+    "cardColor": "#fce4ec",
+    "brand": "Vespro"
+  },
+  {
+    "id": "11",
+    "name": "Avocado Moisturizing Mask",
+    "slug": "avocado-moisturizing-mask",
+    "tagline": "Skin's Superfood Treatment",
+    "price": 2,
+    "originalPrice": null,
+    "rating": 0,
+    "reviewCount": 0,
+    "category": "Sheet",
+    "badge": null,
+    "description": "Rich in essential fatty acids and vitamins A, D, and E, avocado extract delivers intense nourishment to thirsty skin. This superfood mask melts into the skin like a luxurious butter, restoring elasticity and deep moisture.",
+    "ingredients": [
+      "Avocado Extract",
+      "Avocado Oil",
+      "Vitamin E",
+      "Vitamin A",
+      "Shea Butter Extract",
+      "Glycerin"
+    ],
+    "skinType": [
+      "Dry",
+      "Mature",
+      "Dehydrated",
+      "Normal"
+    ],
+    "howToUse": "Cleanse face. Apply mask and leave on 15\u201320 min. Remove and pat remaining essence in. No rinsing needed.",
+    "image": "/images/avocado-mask.jpg",
+    "images": [
+      "/images/avocado-mask.jpg"
+    ],
+    "inStock": true,
+    "quantity": 999,
+    "packSize": 1,
+    "iconType": "avocado",
+    "cardColor": "#f1f8e9",
+    "brand": "Vespro"
+  },
+  {
+    "id": "12",
+    "name": "Pomegranate Firming Mask",
+    "slug": "pomegranate-firming-mask",
+    "tagline": "Nature's Red Jewel for Your Skin",
+    "price": 2.25,
+    "originalPrice": null,
+    "rating": 0,
+    "reviewCount": 0,
+    "category": "Sheet",
+    "badge": null,
+    "description": "Pomegranate extract is nature's most powerful firming antioxidant, packed with punicalagins that boost collagen synthesis and fight signs of aging. This mask visibly firms, lifts, and leaves skin with a jewel-like luminosity.",
+    "ingredients": [
+      "Pomegranate Extract",
+      "Punicalagins",
+      "Ellagic Acid",
+      "Collagen Peptides",
+      "Hyaluronic Acid",
+      "Vitamin C"
+    ],
+    "skinType": [
+      "Mature",
+      "Dry",
+      "Normal",
+      "All Skin Types"
+    ],
+    "howToUse": "Cleanse face. Apply mask and leave on 15\u201320 min. Remove and pat remaining essence in. No rinsing needed.",
+    "image": "/images/pomegranate-mask.jpg",
+    "images": [
+      "/images/pomegranate-mask.jpg"
+    ],
+    "inStock": true,
+    "quantity": 999,
+    "packSize": 1,
+    "iconType": "pomegranate",
+    "cardColor": "#fce4ec",
+    "brand": "Vespro"
+  },
+  {
+    "id": "13",
+    "name": "Orange VC Brightening Mask",
+    "slug": "orange-vc-brightening-mask",
+    "tagline": "Glow Immediately",
+    "price": 2.5,
+    "originalPrice": null,
+    "rating": 0,
+    "reviewCount": 0,
+    "category": "Sheet",
+    "badge": "New",
+    "description": "Packed with Vitamin C from orange extract, this brightening sheet mask visibly evens skin tone and boosts radiance in just one use.",
+    "ingredients": [
+      "Orange Fruit Extract",
+      "Vitamin C",
+      "Niacinamide",
+      "Glycerin",
+      "Hyaluronic Acid"
+    ],
+    "skinType": [
+      "Dull",
+      "Uneven",
+      "All Skin Types"
+    ],
+    "howToUse": "Cleanse face. Apply mask and leave on 15\u201320 min. Remove and pat remaining essence in.",
+    "image": "/images/aloe-mask.jpg",
+    "images": [
+      "/images/aloe-mask.jpg"
+    ],
+    "inStock": false,
+    "quantity": 0,
+    "packSize": 1,
+    "iconType": "lemon",
+    "cardColor": "#fff3e0",
+    "comingSoon": true,
+    "brand": "ZealSea"
+  },
+  {
+    "id": "14",
+    "name": "Green Tea Refreshing Mask",
+    "slug": "green-tea-refreshing-mask",
+    "tagline": "Every Pore Is Breathing",
+    "price": 2.5,
+    "originalPrice": null,
+    "rating": 0,
+    "reviewCount": 0,
+    "category": "Sheet",
+    "badge": "New",
+    "description": "Infused with green tea antioxidants, this refreshing mask purifies pores, controls oil, and leaves skin feeling clean and balanced.",
+    "ingredients": [
+      "Green Tea Leaf Extract",
+      "Centella Asiatica",
+      "Witch Hazel",
+      "Niacinamide",
+      "Glycerin"
+    ],
+    "skinType": [
+      "Oily",
+      "Combination",
+      "Acne-Prone"
+    ],
+    "howToUse": "Cleanse face. Apply mask and leave on 15\u201320 min. Remove and pat remaining essence in.",
+    "image": "/images/aloe-mask.jpg",
+    "images": [
+      "/images/aloe-mask.jpg"
+    ],
+    "inStock": false,
+    "quantity": 0,
+    "packSize": 1,
+    "iconType": "seaweed",
+    "cardColor": "#e0f5ec",
+    "comingSoon": true,
+    "brand": "ZealSea"
+  },
+  {
+    "id": "15",
+    "name": "Avocado Moisturizing Mask",
+    "slug": "avocado-moisturizing-mask",
+    "tagline": "AHA H2O",
+    "price": 2.5,
+    "originalPrice": null,
+    "rating": 0,
+    "reviewCount": 0,
+    "category": "Sheet",
+    "badge": "New",
+    "description": "Rich in avocado oil and AHA, this mask deeply moisturizes while gently exfoliating for smoother, plumper skin.",
+    "ingredients": [
+      "Avocado Oil",
+      "AHA (Glycolic Acid)",
+      "Shea Butter",
+      "Vitamin E",
+      "Hyaluronic Acid"
+    ],
+    "skinType": [
+      "Dry",
+      "Normal",
+      "Mature"
+    ],
+    "howToUse": "Cleanse face. Apply mask and leave on 15\u201320 min. Remove and pat remaining essence in.",
+    "image": "/images/aloe-mask.jpg",
+    "images": [
+      "/images/aloe-mask.jpg"
+    ],
+    "inStock": false,
+    "quantity": 0,
+    "packSize": 1,
+    "iconType": "avocado",
+    "cardColor": "#c8e6d4",
+    "comingSoon": true,
+    "brand": "ZealSea"
+  },
+  {
+    "id": "16",
+    "name": "Honey Nourishing Mask",
+    "slug": "honey-nourishing-mask-zealsea",
+    "tagline": "Be My Honey",
+    "price": 2.5,
+    "originalPrice": null,
+    "rating": 0,
+    "reviewCount": 0,
+    "category": "Sheet",
+    "badge": "New",
+    "description": "Honey-enriched formula that intensely nourishes and softens dry skin, locking in moisture for a dewy, healthy glow.",
+    "ingredients": [
+      "Honey Extract",
+      "Royal Jelly",
+      "Propolis",
+      "Beeswax",
+      "Glycerin"
+    ],
+    "skinType": [
+      "Dry",
+      "Dehydrated",
+      "Sensitive"
+    ],
+    "howToUse": "Cleanse face. Apply mask and leave on 15\u201320 min. Remove and pat remaining essence in.",
+    "image": "/images/aloe-mask.jpg",
+    "images": [
+      "/images/aloe-mask.jpg"
+    ],
+    "inStock": false,
+    "quantity": 0,
+    "packSize": 1,
+    "iconType": "honey",
+    "cardColor": "#fff9c4",
+    "comingSoon": true,
+    "brand": "ZealSea"
+  },
+  {
+    "id": "17",
+    "name": "Aloe SOS Soothing Mask",
+    "slug": "aloe-sos-soothing-mask",
+    "tagline": "Save My Skin!",
+    "price": 2.5,
+    "originalPrice": null,
+    "rating": 0,
+    "reviewCount": 0,
+    "category": "Sheet",
+    "badge": "New",
+    "description": "An emergency rescue mask for stressed or irritated skin. Aloe vera and calming botanicals instantly soothe redness and restore comfort.",
+    "ingredients": [
+      "Aloe Vera (99%)",
+      "Madecassoside",
+      "Panthenol",
+      "Allantoin",
+      "Chamomile Extract"
+    ],
+    "skinType": [
+      "Sensitive",
+      "Irritated",
+      "Sunburned"
+    ],
+    "howToUse": "Cleanse face. Apply mask and leave on 15\u201320 min. Remove and pat remaining essence in.",
+    "image": "/images/aloe-mask.jpg",
+    "images": [
+      "/images/aloe-mask.jpg"
+    ],
+    "inStock": false,
+    "quantity": 0,
+    "packSize": 1,
+    "iconType": "aloe",
+    "cardColor": "#d4e8ff",
+    "comingSoon": true,
+    "brand": "ZealSea"
+  },
+  {
+    "id": "18",
+    "name": "Coffee Anti-Aging Mask",
+    "slug": "coffee-anti-aging-mask",
+    "tagline": "Dancing Youth",
+    "price": 2.5,
+    "originalPrice": null,
+    "rating": 0,
+    "reviewCount": 0,
+    "category": "Sheet",
+    "badge": "New",
+    "description": "Energize your skin with coffee extract and peptides. This anti-aging mask reduces the appearance of fine lines and firms the complexion.",
+    "ingredients": [
+      "Coffee Fruit Extract",
+      "Caffeine",
+      "Retinol",
+      "Peptides",
+      "Vitamin E"
+    ],
+    "skinType": [
+      "Mature",
+      "Dull",
+      "All Skin Types"
+    ],
+    "howToUse": "Cleanse face. Apply mask and leave on 15\u201320 min. Remove and pat remaining essence in.",
+    "image": "/images/aloe-mask.jpg",
+    "images": [
+      "/images/aloe-mask.jpg"
+    ],
+    "inStock": false,
+    "quantity": 0,
+    "packSize": 1,
+    "iconType": "chamomile",
+    "cardColor": "#ede0d4",
+    "comingSoon": true,
+    "brand": "ZealSea"
+  },
+  {
+    "id": "19",
+    "name": "Pomegranate Vitality Mask",
+    "slug": "pomegranate-vitality-mask",
+    "tagline": "Vitality Anytime",
+    "price": 2.5,
+    "originalPrice": null,
+    "rating": 0,
+    "reviewCount": 0,
+    "category": "Sheet",
+    "badge": "New",
+    "description": "Bursting with pomegranate antioxidants, this firming mask restores elasticity, brightens, and revitalizes tired skin.",
+    "ingredients": [
+      "Pomegranate Fruit Extract",
+      "Ellagic Acid",
+      "Collagen",
+      "Vitamin C",
+      "Resveratrol"
+    ],
+    "skinType": [
+      "All Skin Types",
+      "Mature",
+      "Dull"
+    ],
+    "howToUse": "Cleanse face. Apply mask and leave on 15\u201320 min. Remove and pat remaining essence in.",
+    "image": "/images/aloe-mask.jpg",
+    "images": [
+      "/images/aloe-mask.jpg"
+    ],
+    "inStock": false,
+    "quantity": 0,
+    "packSize": 1,
+    "iconType": "pomegranate",
+    "cardColor": "#ffd4d4",
+    "comingSoon": true,
+    "brand": "ZealSea"
+  }
+]

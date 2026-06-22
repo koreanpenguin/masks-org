@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  items         String
+  total         Float
+  paymentMethod String   @default("cash")
+  userName      String?
+  userEmail     String?
+}
+
+model ProductOverride {
+  id        String   @id
+  data      String   @default("{}")
+  updatedAt DateTime @updatedAt
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  productId String
+  userName  String
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+}
