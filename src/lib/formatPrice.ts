@@ -27,3 +27,14 @@ export function formatPrice(usdPrice: number, locale: Locale, slug?: string): st
   }
   return `$${usdPrice.toFixed(2)}`;
 }
+
+export function formatTotalPrice(baseUsd: number, addonsUsd: number, locale: Locale, slug?: string): string {
+  if (locale === "ko") {
+    const base = slug != null && KRW_PRICES[slug] != null
+      ? KRW_PRICES[slug]
+      : Math.round((baseUsd * USD_TO_KRW) / 1000) * 1000;
+    const addons = Math.round((addonsUsd * USD_TO_KRW) / 1000) * 1000;
+    return `₩${(base + addons).toLocaleString("ko-KR")}`;
+  }
+  return `$${(baseUsd + addonsUsd).toFixed(2)}`;
+}

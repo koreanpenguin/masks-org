@@ -11,7 +11,7 @@ import type { Product } from "@/domain/types";
 import { useLanguageStore } from "@/store/languageStore";
 import { useTranslations } from "@/lib/translations";
 import { localizeProduct } from "@/lib/productTranslations";
-import { formatPrice } from "@/lib/formatPrice";
+import { formatPrice, formatTotalPrice } from "@/lib/formatPrice";
 import type { Locale } from "@/store/languageStore";
 
 const SESSION_OPTIONS = [
@@ -246,14 +246,16 @@ export default function CustomizePage({
               <span>+{formatPrice(massagePrice, locale)}</span>
             </div>
           )}
-          <div className="flex justify-between font-bold text-[#2d2926] text-lg pt-2 border-t border-[#e8ddd0]">
-            <span>{tr.customize.total}</span>
-            <span>{formatPrice(total, locale)}</span>
-          </div>
+          {allSelected && (
+            <div className="flex justify-between font-bold text-[#2d2926] text-lg pt-2 border-t border-[#e8ddd0]">
+              <span>{tr.customize.total}</span>
+              <span>{formatTotalPrice(product.price, sessionPrice + cleanserPrice + massagePrice, locale, product.slug)}</span>
+            </div>
+          )}
         </div>
 
         <Button size="lg" className="w-full" disabled={!allSelected} onClick={handleAddToCart}>
-          {allSelected ? `${tr.customize.addToCart} — ${formatPrice(total, locale)}` : tr.customize.selectAll}
+          {allSelected ? `${tr.customize.addToCart} — ${formatTotalPrice(product.price, sessionPrice + cleanserPrice + massagePrice, locale, product.slug)}` : tr.customize.selectAll}
         </Button>
       </div>
     </div>

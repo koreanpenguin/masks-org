@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Admin" };
@@ -44,6 +45,20 @@ export default async function AdminPage() {
     <div className="max-w-5xl mx-auto px-4 py-12 space-y-14">
 
       <DeploySteps />
+
+      {/* Quick actions */}
+      <section>
+        <p className="text-xs uppercase tracking-widest text-[#8c7b6e] mb-3">Quick Actions</p>
+        <Link
+          href="/admin/new-order"
+          className="inline-flex items-center gap-2 bg-terracotta text-white px-5 py-3 rounded-xl font-semibold text-sm hover:bg-[#a8654a] transition-colors shadow-sm"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          New Order
+        </Link>
+      </section>
 
       {/* Products */}
       <section>

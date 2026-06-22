@@ -20,7 +20,7 @@ export function VideoAd() {
       className="relative overflow-hidden rounded-3xl bg-[#2d2926] aspect-video shadow-xl"
     >
       <video
-        src="/ad.mp4"
+        src="/ad2.mp4"
         autoPlay
         muted
         loop
