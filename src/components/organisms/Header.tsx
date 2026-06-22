@@ -91,7 +91,7 @@ export function Header({ user }: { user: SessionUser | null }) {
             compact ? "h-11" : "h-16"
           }`}
         >
-          <Link href="/" className="flex flex-col leading-none shrink-0">
+          <Link href="/" className="hidden md:flex flex-col leading-none shrink-0">
             <span
               className={`font-bold text-charcoal tracking-tight transition-all duration-200 flex items-center gap-1.5 ${
                 compact ? "text-base" : "text-xl"

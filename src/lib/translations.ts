@@ -240,7 +240,7 @@ export const t = {
     },
     home: {
       pill: "콜라겐 · 수분 · 글로우",
-      heroLine1: "당신의 피부가 원하는",
+      heroLine1: "피부가 원하는",
       heroLine2: "마스크 팩.",
       heroBody: "콜라겐이 가득한 시트 마스크로 20분 만에 깊은 수분을 채워보세요. 스파 나이트, 슬립오버, 선물로 완벽해요.",
       shopAll: "모든 마스크 보기",
