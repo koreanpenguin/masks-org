@@ -2,6 +2,16 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 
+export async function saveGameConfig(winPercent: number, discountUsd: number, discountKrw: number) {
+  await prisma.gameConfig.upsert({
+    where: { id: "singleton" },
+    create: { id: "singleton", winPercent, discountUsd, discountKrw },
+    update: { winPercent, discountUsd, discountKrw },
+  });
+  revalidatePath("/admin");
+  revalidatePath("/game");
+}
+
 export async function clearOrders() {
   await prisma.order.deleteMany();
   revalidatePath("/admin");

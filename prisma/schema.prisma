@@ -39,3 +39,18 @@ model Review {
   comment   String
   createdAt DateTime @default(now())
 }
+
+model GameConfig {
+  id          String @id @default("singleton")
+  winPercent  Float  @default(15)
+  discountUsd Float  @default(3)
+  discountKrw Int    @default(4000)
+}
+
+model Coupon {
+  code        String   @id
+  discountUsd Float
+  discountKrw Int
+  used        Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}

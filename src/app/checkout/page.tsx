@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCartStore } from "@/store/cartStore";
 import { Button } from "@/components/atoms/Button";
 import { createOrder } from "@/app/actions/order";
+import { validateCoupon, redeemCoupon } from "@/app/actions/game";
 import { discountedUnitPrice } from "@/lib/discount";
 import { useLanguageStore } from "@/store/languageStore";
 import { useTranslations } from "@/lib/translations";
@@ -12,17 +13,33 @@ import { formatPrice } from "@/lib/formatPrice";
 
 const inputClass = "w-full rounded-xl border border-[#e8ddd0] px-4 py-3 text-[#2d2926] text-sm focus:outline-none focus:border-[#c17a5a] transition-colors";
 
+interface AppliedCoupon {
+  code: string;
+  discountUsd: number;
+  discountKrw: number;
+}
+
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, totalPrice, clearCart } = useCartStore();
   const locale = useLanguageStore((s) => s.locale);
   const tr = useTranslations(locale);
-  const total = totalPrice();
+  const subtotal = totalPrice();
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => { document.title = "MasksOrg - Checkout"; }, []);
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
+
+  // Coupon state
+  const [couponInput, setCouponInput] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
+  const [couponError, setCouponError] = useState("");
+  const [couponLoading, setCouponLoading] = useState(false);
+
+  useEffect(() => { document.title = "MasksOrg - Checkout"; }, []);
+
+  const discountUsd = appliedCoupon?.discountUsd ?? 0;
+  const discountKrw = appliedCoupon?.discountKrw ?? 0;
+  const total = Math.max(0, subtotal - discountUsd);
 
   if (items.length === 0) {
     return (
@@ -31,6 +48,19 @@ export default function CheckoutPage() {
         <Link href="/shop"><Button size="lg">{tr.checkout.browseMasks}</Button></Link>
       </div>
     );
+  }
+
+  async function applyCoupon() {
+    setCouponLoading(true);
+    setCouponError("");
+    const result = await validateCoupon(couponInput.trim().toUpperCase());
+    if (result.valid) {
+      setAppliedCoupon({ code: couponInput.trim().toUpperCase(), discountUsd: result.discountUsd, discountKrw: result.discountKrw });
+      setCouponInput("");
+    } else {
+      setCouponError(result.error ?? "Invalid coupon");
+    }
+    setCouponLoading(false);
   }
 
   async function handlePay() {
@@ -43,6 +73,9 @@ export default function CheckoutPage() {
       price: discountedUnitPrice(product.price, quantity),
     }));
     await createOrder(orderItems, total, firstName.trim(), email.trim());
+    if (appliedCoupon) {
+      await redeemCoupon(appliedCoupon.code);
+    }
     const slugs = [...new Set(items.map(({ product }) => product.slug))].join(",");
     clearCart();
     router.push(`/checkout/success?products=${slugs}`);
@@ -92,6 +125,64 @@ export default function CheckoutPage() {
         </div>
       </div>
 
+      {/* Coupon code */}
+      <div className="bg-white rounded-2xl shadow-sm p-6 mb-6">
+        <h2 className="text-sm uppercase tracking-widest text-[#8c7b6e] mb-4">
+          🎰 {locale === "ko" ? "쿠폰 코드" : "Coupon Code"}
+        </h2>
+        {appliedCoupon ? (
+          <div className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-[#f0fdf4] border border-[#86efac]">
+            <div className="flex items-center gap-2">
+              <span className="text-green-500 text-lg">✓</span>
+              <code className="font-bold text-green-700 tracking-widest text-sm">{appliedCoupon.code}</code>
+            </div>
+            <div className="flex items-center gap-3 shrink-0">
+              <span className="text-green-700 font-semibold text-sm">
+                -{locale === "ko"
+                  ? `₩${discountKrw.toLocaleString("ko-KR")}`
+                  : `$${discountUsd.toFixed(2)}`}
+              </span>
+              <button
+                onClick={() => setAppliedCoupon(null)}
+                className="text-xs text-[#8c7b6e] hover:text-red-500 transition-colors underline underline-offset-2"
+              >
+                {locale === "ko" ? "제거" : "Remove"}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="MASKS-XXXXX"
+                value={couponInput}
+                onChange={(e) => { setCouponInput(e.target.value.toUpperCase()); setCouponError(""); }}
+                onKeyDown={(e) => e.key === "Enter" && couponInput.trim() && applyCoupon()}
+                className={`${inputClass} flex-1 font-mono tracking-wider`}
+              />
+              <button
+                onClick={applyCoupon}
+                disabled={couponLoading || !couponInput.trim()}
+                className="shrink-0 px-5 py-3 rounded-xl bg-[#c17a5a] text-white font-semibold text-sm hover:bg-[#a8654a] transition-colors disabled:opacity-40"
+              >
+                {couponLoading ? "…" : locale === "ko" ? "적용" : "Apply"}
+              </button>
+            </div>
+            {couponError && (
+              <p className="text-red-500 text-xs mt-2 flex items-center gap-1">
+                <span>✕</span> {couponError}
+              </p>
+            )}
+            <p className="text-xs text-[#8c7b6e] mt-2">
+              {locale === "ko"
+                ? "MasksOrgEry 게임에서 받은 코드를 입력하세요."
+                : "Enter a code from the MasksOrgEry scratch game."}
+            </p>
+          </>
+        )}
+      </div>
+
       {/* Order summary */}
       <div className="bg-white rounded-2xl shadow-sm p-6 mb-6">
         <h2 className="text-sm uppercase tracking-widest text-[#8c7b6e] mb-4">{tr.checkout.orderSummary}</h2>
@@ -111,6 +202,18 @@ export default function CheckoutPage() {
             );
           })}
         </div>
+
+        {appliedCoupon && (
+          <div className="mt-3 flex justify-between text-sm text-green-600 font-medium">
+            <span>{locale === "ko" ? "쿠폰 할인" : "Coupon discount"} ({appliedCoupon.code})</span>
+            <span>
+              -{locale === "ko"
+                ? `₩${discountKrw.toLocaleString("ko-KR")}`
+                : `$${discountUsd.toFixed(2)}`}
+            </span>
+          </div>
+        )}
+
         <div className="border-t border-[#e8ddd0] mt-4 pt-4 flex justify-between font-bold text-[#2d2926] text-lg">
           <span>{tr.checkout.total}</span>
           <span>{formatPrice(total, locale)}</span>

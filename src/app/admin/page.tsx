@@ -11,9 +11,11 @@ import { clearOrders, clearUsers, clearReviews, deleteReview, deleteUser } from 
 import { ClearButton } from "./ClearButton";
 import { DeploySteps } from "./DeploySteps";
 import { ProductEditor } from "./ProductEditor";
+import { GameConfigEditor } from "./GameConfigEditor";
 import { getProductsWithOverrides } from "@/lib/products";
 import { getLocale } from "@/lib/locale";
 import { t } from "@/lib/translations";
+import { getGameConfig } from "@/app/actions/game";
 
 const ADMINS = ["haeonpark.kr@gmail.com", "jionpark.kr@gmail.com"];
 
@@ -26,7 +28,7 @@ export default async function AdminPage() {
   const tr = t[locale].admin;
   const dateLocale = locale === "ko" ? "ko-KR" : "en-US";
 
-  const [users, orders, products, reviews] = await Promise.all([
+  const [users, orders, products, reviews, gameConfig] = await Promise.all([
     prisma.user.findMany({
       where: { email: { notIn: ADMINS } },
       orderBy: { createdAt: "desc" },
@@ -39,6 +41,7 @@ export default async function AdminPage() {
     prisma.review.findMany({
       orderBy: { createdAt: "desc" },
     }),
+    getGameConfig(),
   ]);
 
   return (
@@ -58,6 +61,18 @@ export default async function AdminPage() {
           </svg>
           New Order
         </Link>
+      </section>
+
+      {/* MasksOrgEry Game Settings */}
+      <section>
+        <div className="mb-4">
+          <p className="text-xs uppercase tracking-widest text-[#8c7b6e] mb-1">MasksOrgEry</p>
+          <h2 className="text-3xl font-bold text-[#2d2926]">Game Settings</h2>
+          <p className="text-[#8c7b6e] mt-1 text-sm">
+            Control the scratch-off lottery — win probability and coupon discount value.
+          </p>
+        </div>
+        <GameConfigEditor config={gameConfig} />
       </section>
 
       {/* Products */}

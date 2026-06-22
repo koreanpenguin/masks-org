@@ -49,6 +49,9 @@ export default async function HomePage() {
             <Link href="/shop">
               <Button size="lg">{tr.home.shopAll}</Button>
             </Link>
+            <Link href="/game">
+              <Button variant="outline" size="lg">🎰 Try Your Luck</Button>
+            </Link>
           </div>
         </div>
       </section>
