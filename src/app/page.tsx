@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: { absolute: "MasksOrg - Home" } };
 import { ProductCard } from "@/components/molecules/ProductCard";
 import { Button } from "@/components/atoms/Button";

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Admin" };
 import { getSession } from "@/lib/session";
 import { prisma } from "@/lib/db";
