@@ -259,6 +259,11 @@ export default async function AdminPage() {
                         {" · "}
                         {order.createdAt.toLocaleTimeString(dateLocale, { hour: "numeric", minute: "2-digit" })}
                       </p>
+                      {order.scheduledDate && (
+                        <p className="text-xs text-amber-600 mt-0.5 font-medium">
+                          📅 {order.scheduledDate.toLocaleDateString(dateLocale, { year: "numeric", month: "short", day: "numeric" })}
+                        </p>
+                      )}
                     </div>
                     <div className="text-right shrink-0">
                       <p className="font-bold text-[#2d2926] text-lg">${order.total.toFixed(2)}</p>

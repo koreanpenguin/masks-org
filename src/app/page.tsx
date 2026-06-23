@@ -50,7 +50,9 @@ export default async function HomePage() {
               <Button size="lg">{tr.home.shopAll}</Button>
             </Link>
             <Link href="/game">
-              <Button variant="outline" size="lg">🎰 Try Your Luck</Button>
+              <Button variant="outline" size="lg">
+                🎰 {locale === "ko" ? "행운 도전하기" : "Try Your Luck"}
+              </Button>
             </Link>
           </div>
         </div>

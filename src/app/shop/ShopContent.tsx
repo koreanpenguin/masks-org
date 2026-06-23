@@ -33,7 +33,7 @@ export function ShopContent({ products }: { products: Product[] }) {
         <div>
           <h1 className="text-4xl font-bold text-[#2d2926] mb-2">{tr.shop.heading}</h1>
           <p className="text-[#8c7b6e]">
-            {filtered.length} {tr.shop.products}
+            {filtered.length} {filtered.length === 1 ? tr.shop.product : tr.shop.products}
           </p>
         </div>
 
@@ -66,11 +66,29 @@ export function ShopContent({ products }: { products: Product[] }) {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filtered.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+      {filtered.length === 0 ? (
+        <div className="text-center py-24">
+          <p className="text-5xl mb-4">🔍</p>
+          <p className="text-xl font-bold text-[#2d2926] mb-2">
+            {locale === "ko" ? "제품을 찾을 수 없어요" : "No products found"}
+          </p>
+          <p className="text-[#8c7b6e] mb-6">
+            {locale === "ko" ? "다른 필터를 시도해보세요." : "Try a different filter."}
+          </p>
+          <button
+            onClick={() => setBrand("All")}
+            className="px-6 py-2.5 rounded-xl bg-[#c17a5a] text-white font-semibold text-sm hover:bg-[#a8654a] transition-colors"
+          >
+            {locale === "ko" ? "필터 초기화" : "Clear filters"}
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filtered.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

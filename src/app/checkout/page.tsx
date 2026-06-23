@@ -36,6 +36,7 @@ export default function CheckoutPage() {
   const tr = useTranslations(locale);
   const subtotal = totalPrice();
   const [loading, setLoading] = useState(false);
+  const [payError, setPayError] = useState("");
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
 
@@ -89,23 +90,30 @@ export default function CheckoutPage() {
 
   async function handlePay() {
     if (!firstName.trim() || !email.trim()) return;
+    setPayError("");
     setLoading(true);
-    const orderItems = items.map(({ product, quantity }) => ({
-      name: product.name,
-      description: product.description ?? "",
-      quantity,
-      price: discountedUnitPrice(product.price, quantity),
-    }));
-    await createOrder(orderItems, total, firstName.trim(), email.trim(), scheduledDate);
-    if (appliedCoupon) {
-      await redeemCoupon(appliedCoupon.code);
+    try {
+      const orderItems = items.map(({ product, quantity }) => ({
+        name: product.name,
+        description: product.description ?? "",
+        quantity,
+        price: discountedUnitPrice(product.price, quantity),
+      }));
+      await createOrder(orderItems, total, firstName.trim(), email.trim(), scheduledDate);
+      if (appliedCoupon) {
+        await redeemCoupon(appliedCoupon.code);
+      }
+      const slugs = [...new Set(items.map(({ product }) => product.slug))].join(",");
+      clearCart();
+      router.push(`/checkout/success?products=${slugs}`);
+    } catch {
+      setPayError(locale === "ko" ? "주문 중 오류가 발생했습니다. 다시 시도해주세요." : "Something went wrong. Please try again.");
+      setLoading(false);
     }
-    const slugs = [...new Set(items.map(({ product }) => product.slug))].join(",");
-    clearCart();
-    router.push(`/checkout/success?products=${slugs}`);
   }
 
-  const canPay = firstName.trim() !== "" && email.trim() !== "";
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const canPay = firstName.trim() !== "" && emailValid;
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
@@ -300,6 +308,11 @@ export default function CheckoutPage() {
         </div>
       </div>
 
+      {payError && (
+        <p className="text-red-500 text-sm bg-red-50 rounded-xl px-4 py-3 mb-4 flex items-center gap-2">
+          <span>⚠️</span> {payError}
+        </p>
+      )}
       <Button size="lg" className="w-full" onClick={handlePay} disabled={loading || !canPay}>
         {loading ? tr.checkout.placing : `${tr.checkout.confirm} — ${formatPrice(total, locale)}`}
       </Button>

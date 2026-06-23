@@ -67,6 +67,9 @@ export function ScratchGame({ config }: { config: GameConfig }) {
   const [copied, setCopied] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
 
+  const prefersReducedMotion =
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isDown = useRef(false);
   const hasRevealed = useRef(false);
@@ -244,7 +247,7 @@ export function ScratchGame({ config }: { config: GameConfig }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-cream via-[#f0e8dd] to-cream flex flex-col items-center justify-center px-4 py-12">
-      {showConfetti && <Confetti />}
+      {showConfetti && !prefersReducedMotion && <Confetti />}
 
       <div className="text-center mb-8">
         <p className="text-xs uppercase tracking-[0.2em] text-terracotta font-medium mb-2">MasksOrg</p>

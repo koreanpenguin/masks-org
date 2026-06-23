@@ -116,11 +116,13 @@ export default function CustomizePage({
       massage === "premium" ? "Premium Massage" : null,
     ].filter(Boolean).join(" · ");
 
+    // Always store English name/description so orders are readable in the admin
+    // regardless of the locale the customer was using when they checked out.
     const customProduct: Product = {
       ...(product as Product),
       id: `${product.id}-${session}-${cleanser}-${massage}`,
-      name: product.name,
-      description: `${addOns} | ${product.description}`,
+      name: raw!.name,
+      description: `${addOns} | ${raw!.description}`,
       price: total,
       originalPrice: null,
     };

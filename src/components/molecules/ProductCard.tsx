@@ -46,14 +46,14 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="absolute bottom-0 inset-x-0 h-14 bg-gradient-to-t from-white/90 to-transparent pointer-events-none" />
           <div className="absolute inset-0 bg-white/50 backdrop-blur-[2px] flex items-center justify-center">
             <span className="bg-[#2d2926] text-white text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full">
-              Coming Soon
+              {tr.product.comingSoon}
             </span>
           </div>
         </div>
         <div className="p-4 flex flex-col flex-1 gap-1.5">
           {p.tagline && <p className="text-xs text-[#8c7b6e] italic">{p.tagline}</p>}
           <h3 className="font-bold text-[#2d2926] leading-snug">{p.name}</h3>
-          <p className="text-xs text-[#8c7b6e] mt-auto pt-1">Available soon</p>
+          <p className="text-xs text-[#8c7b6e] mt-auto pt-1">{tr.product.availableSoon}</p>
         </div>
       </div>
     );
@@ -77,7 +77,7 @@ export function ProductCard({ product }: ProductCardProps) {
           )}
           {!product.inStock && (
             <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
-              <span className="text-[#8c7b6e] font-medium text-sm">Sold Out</span>
+              <span className="text-[#8c7b6e] font-medium text-sm">{tr.product.soldOut}</span>
             </div>
           )}
         </div>

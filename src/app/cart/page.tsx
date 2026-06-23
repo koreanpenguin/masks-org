@@ -1,6 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import Link from "next/link";
+import { useState } from "react";
 import { useCartStore } from "@/store/cartStore";
 import { Button } from "@/components/atoms/Button";
 import { SheetMaskIcon } from "@/components/atoms/icons/SheetMaskIcon";
@@ -14,6 +15,7 @@ export default function CartPage() {
   const locale = useLanguageStore((s) => s.locale);
   const tr = useTranslations(locale);
   const total = totalPrice();
+  const [confirmClear, setConfirmClear] = useState(false);
 
   useEffect(() => { document.title = "MasksOrg - Cart"; }, []);
 
@@ -86,12 +88,31 @@ export default function CartPage() {
             );
           })}
 
-          <button
-            onClick={clearCart}
-            className="text-sm text-[#8c7b6e] hover:text-[#c17a5a] transition-colors"
-          >
-            {tr.cart.clearCart}
-          </button>
+          {confirmClear ? (
+            <span className="text-sm text-[#2d2926]">
+              {locale === "ko" ? "정말요? " : "Are you sure? "}
+              <button
+                onClick={() => { clearCart(); setConfirmClear(false); }}
+                className="text-red-500 hover:text-red-600 font-medium transition-colors"
+              >
+                {locale === "ko" ? "네" : "Yes"}
+              </button>
+              {" · "}
+              <button
+                onClick={() => setConfirmClear(false)}
+                className="text-[#8c7b6e] hover:text-[#c17a5a] transition-colors"
+              >
+                {locale === "ko" ? "아니요" : "No"}
+              </button>
+            </span>
+          ) : (
+            <button
+              onClick={() => setConfirmClear(true)}
+              className="text-sm text-[#8c7b6e] hover:text-[#c17a5a] transition-colors"
+            >
+              {tr.cart.clearCart}
+            </button>
+          )}
         </div>
 
         {/* Summary */}

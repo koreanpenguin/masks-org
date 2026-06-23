@@ -52,8 +52,8 @@ function StarPicker({
   );
 }
 
-function ReviewCard({ review }: { review: ReviewData }) {
-  const date = new Date(review.createdAt).toLocaleDateString("en-US", {
+function ReviewCard({ review, locale }: { review: ReviewData; locale: Locale }) {
+  const date = new Date(review.createdAt).toLocaleDateString(locale === "ko" ? "ko-KR" : "en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -214,8 +214,10 @@ export function ReviewSection({
                   onChange={(e) => setComment(e.target.value)}
                   placeholder={tr.reviewPlaceholder}
                   rows={4}
+                  maxLength={800}
                   className={`${inputClass} resize-none`}
                 />
+                <p className="text-xs text-[#8c7b6e] text-right mt-1">{comment.length}/800</p>
               </div>
 
               {error && (
@@ -227,7 +229,7 @@ export function ReviewSection({
               <Button
                 size="lg"
                 className="w-full"
-                disabled={isPending}
+                disabled={isPending || rating === 0 || !comment.trim() || !name.trim()}
                 onClick={handleSubmit}
               >
                 {isPending ? tr.posting : tr.post}
@@ -244,7 +246,7 @@ export function ReviewSection({
               <p className="font-medium">{tr.beFirst}</p>
             </div>
           ) : (
-            reviews.map((r) => <ReviewCard key={r.id} review={r} />)
+            reviews.map((r) => <ReviewCard key={r.id} review={r} locale={locale} />)
           )}
         </div>
       </div>
