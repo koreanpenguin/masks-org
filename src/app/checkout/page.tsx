@@ -8,6 +8,7 @@ import { createOrder } from "@/app/actions/order";
 import { validateCoupon, redeemCoupon } from "@/app/actions/game";
 import { getCurrentUser } from "@/app/actions/auth";
 import { discountedUnitPrice } from "@/lib/discount";
+import { MiniCalendar } from "./MiniCalendar";
 import { useLanguageStore } from "@/store/languageStore";
 import { useTranslations } from "@/lib/translations";
 import { formatPrice } from "@/lib/formatPrice";
@@ -153,12 +154,11 @@ export default function CheckoutPage() {
         <h2 className="text-sm uppercase tracking-widest text-[#8c7b6e] mb-4">
           📅 {locale === "ko" ? "세션 날짜" : "Session Date"}
         </h2>
-        <input
-          type="date"
+        <MiniCalendar
           value={scheduledDate}
-          min={todayStr}
-          onChange={(e) => setScheduledDate(e.target.value || todayStr)}
-          className={`${inputClass} cursor-pointer`}
+          minValue={todayStr}
+          onChange={setScheduledDate}
+          locale={locale}
         />
         {!isToday && (
           <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
