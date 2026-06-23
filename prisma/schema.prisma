@@ -16,13 +16,14 @@ model User {
 }
 
 model Order {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
+  id            String    @id @default(cuid())
+  createdAt     DateTime  @default(now())
   items         String
   total         Float
-  paymentMethod String   @default("cash")
+  paymentMethod String    @default("cash")
   userName      String?
   userEmail     String?
+  scheduledDate DateTime?
 }
 
 model ProductOverride {

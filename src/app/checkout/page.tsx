@@ -20,6 +20,14 @@ interface AppliedCoupon {
   discountKrw: number;
 }
 
+function getTodayStr() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, totalPrice, clearCart } = useCartStore();
@@ -29,6 +37,13 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
+
+  // Date picker state
+  const todayStr = getTodayStr();
+  const [scheduledDate, setScheduledDate] = useState(todayStr);
+  const isToday = scheduledDate === todayStr;
+  const dateSurchargeUsd = isToday ? 0 : 1;
+  const dateSurchargeKrw = isToday ? 0 : 1000;
 
   // Coupon state
   const [couponInput, setCouponInput] = useState("");
@@ -47,7 +62,7 @@ export default function CheckoutPage() {
 
   const discountUsd = appliedCoupon?.discountUsd ?? 0;
   const discountKrw = appliedCoupon?.discountKrw ?? 0;
-  const total = Math.max(0, subtotal - discountUsd);
+  const total = Math.max(0, subtotal - discountUsd + dateSurchargeUsd);
 
   if (items.length === 0) {
     return (
@@ -80,7 +95,7 @@ export default function CheckoutPage() {
       quantity,
       price: discountedUnitPrice(product.price, quantity),
     }));
-    await createOrder(orderItems, total, firstName.trim(), email.trim());
+    await createOrder(orderItems, total, firstName.trim(), email.trim(), scheduledDate);
     if (appliedCoupon) {
       await redeemCoupon(appliedCoupon.code);
     }
@@ -131,6 +146,28 @@ export default function CheckoutPage() {
             />
           </div>
         </div>
+      </div>
+
+      {/* Session date */}
+      <div className="bg-white rounded-2xl shadow-sm p-6 mb-6">
+        <h2 className="text-sm uppercase tracking-widest text-[#8c7b6e] mb-4">
+          📅 {locale === "ko" ? "세션 날짜" : "Session Date"}
+        </h2>
+        <input
+          type="date"
+          value={scheduledDate}
+          min={todayStr}
+          onChange={(e) => setScheduledDate(e.target.value || todayStr)}
+          className={`${inputClass} cursor-pointer`}
+        />
+        {!isToday && (
+          <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
+            <span>⚠️</span>
+            {locale === "ko"
+              ? `오늘 이후 날짜는 예약 수수료 ₩${dateSurchargeKrw.toLocaleString("ko-KR")}이 추가됩니다.`
+              : `A $${dateSurchargeUsd.toFixed(2)} booking fee applies for future dates.`}
+          </p>
+        )}
       </div>
 
       {/* Coupon code */}
@@ -219,6 +256,21 @@ export default function CheckoutPage() {
                 ? `₩${discountKrw.toLocaleString("ko-KR")}`
                 : `$${discountUsd.toFixed(2)}`}
             </span>
+          </div>
+        )}
+
+        {!isToday && (
+          <div className="mt-3 flex justify-between text-sm text-amber-600 font-medium">
+            <span>
+              {locale === "ko" ? "예약 수수료" : "Booking fee"}
+              {" "}
+              <span className="text-xs font-normal text-[#8c7b6e]">
+                ({locale === "ko"
+                  ? new Date(scheduledDate + "T00:00:00").toLocaleDateString("ko-KR", { month: "long", day: "numeric" })
+                  : new Date(scheduledDate + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" })})
+              </span>
+            </span>
+            <span>+{locale === "ko" ? `₩${dateSurchargeKrw.toLocaleString("ko-KR")}` : `$${dateSurchargeUsd.toFixed(2)}`}</span>
           </div>
         )}
 

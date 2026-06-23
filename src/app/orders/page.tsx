@@ -67,17 +67,18 @@ export default async function OrdersPage() {
                 <div className="px-6 py-4 bg-gradient-to-r from-[#faf6f1] to-[#f5ede4] flex items-start justify-between gap-4">
                   <div>
                     <p className="font-semibold text-[#2d2926]">
-                      {order.createdAt.toLocaleDateString(dateLocale, {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
+                      {order.scheduledDate
+                        ? order.scheduledDate.toLocaleDateString(dateLocale, { year: "numeric", month: "long", day: "numeric" })
+                        : order.createdAt.toLocaleDateString(dateLocale, { year: "numeric", month: "long", day: "numeric" })}
                     </p>
+                    {order.scheduledDate && (
+                      <p className="text-xs text-amber-600 font-medium mt-0.5">
+                        {locale === "ko" ? "📅 예약 날짜" : "📅 Appointment"}
+                      </p>
+                    )}
                     <p className="text-xs text-[#8c7b6e] mt-0.5">
-                      {order.createdAt.toLocaleTimeString(dateLocale, {
-                        hour: "numeric",
-                        minute: "2-digit",
-                      })}
+                      {locale === "ko" ? "주문: " : "Ordered: "}
+                      {order.createdAt.toLocaleDateString(dateLocale, { month: "short", day: "numeric" })}
                       {" · "}
                       <span className="font-mono tracking-wider">
                         #{order.id.slice(-8).toUpperCase()}

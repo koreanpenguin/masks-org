@@ -13,6 +13,7 @@ export async function createOrder(
   total: number,
   userName: string,
   userEmail: string,
+  scheduledDate?: string | null,
 ) {
   await prisma.order.create({
     data: {
@@ -21,6 +22,7 @@ export async function createOrder(
       paymentMethod: "cash",
       userName,
       userEmail,
+      scheduledDate: scheduledDate ? new Date(scheduledDate + "T00:00:00.000Z") : null,
     },
   });
 }
