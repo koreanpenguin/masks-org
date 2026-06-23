@@ -10,6 +10,34 @@ export async function getGameConfig() {
   return getConfig();
 }
 
+export async function checkAndRegisterPlay(rawEmail: string): Promise<{
+  allowed: boolean;
+  error?: string;
+}> {
+  const email = rawEmail.trim().toLowerCase();
+  if (!email || !email.includes("@") || !email.includes(".")) {
+    return { allowed: false, error: "Enter a valid email address" };
+  }
+
+  // Check for a play in the last 24 hours
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const existing = await prisma.gamePlay.findFirst({
+    where: { email, playedAt: { gte: since } },
+  });
+
+  if (existing) {
+    const nextPlay = new Date(existing.playedAt.getTime() + 24 * 60 * 60 * 1000);
+    const hoursLeft = Math.ceil((nextPlay.getTime() - Date.now()) / (1000 * 60 * 60));
+    return {
+      allowed: false,
+      error: `You've already played today! Try again in ${hoursLeft} hour${hoursLeft === 1 ? "" : "s"}.`,
+    };
+  }
+
+  await prisma.gamePlay.create({ data: { email } });
+  return { allowed: true };
+}
+
 export async function createCoupon(): Promise<{ code: string; discountUsd: number; discountKrw: number }> {
   const config = await getConfig();
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";

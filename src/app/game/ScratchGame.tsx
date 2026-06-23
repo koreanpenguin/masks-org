@@ -1,7 +1,7 @@
 "use client";
 import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
-import { createCoupon } from "@/app/actions/game";
+import { createCoupon, checkAndRegisterPlay } from "@/app/actions/game";
 
 const SYMBOLS = ["🍀", "⭐", "🌸", "💎", "🎯", "💫", "🌺", "🎁", "✨"];
 const CONFETTI_COLORS = ["#c17a5a","#e8a882","#ffd700","#ff6b6b","#4ecdc4","#a8654a","#f5c0a0","#ffb347","#9b59b6","#2ecc71"];
@@ -20,7 +20,7 @@ function Confetti() {
     dur: 2.4 + (i * 0.07) % 2.2,
     color: CONFETTI_COLORS[i % 10],
     w: 5 + (i % 8),
-    h: i % 3 === 2 ? 5 + (i % 8) * 1.6 : 5 + (i % 8),
+    h: i % 3 === 2 ? (5 + (i % 8)) * 1.6 : 5 + (i % 8),
     radius: i % 3 === 0 ? "50%" : "2px",
   }));
 
@@ -50,24 +50,16 @@ function Confetti() {
 }
 
 export function ScratchGame({ config }: { config: GameConfig }) {
-  // Determine win/lose once using config — lazy initializer closes over config
-  const [game] = useState(() => {
-    const win = Math.random() < config.winPercent / 100;
-    if (win) {
-      const n = Math.floor(Math.random() * 9) + 1;
-      return { win: true, nums: [n, n, n] as [number, number, number] };
-    }
-    let nums: [number, number, number];
-    do {
-      nums = [
-        Math.floor(Math.random() * 9) + 1,
-        Math.floor(Math.random() * 9) + 1,
-        Math.floor(Math.random() * 9) + 1,
-      ] as [number, number, number];
-    } while (nums[0] === nums[1] && nums[1] === nums[2]);
-    return { win: false, nums };
-  });
+  // Phase: "email" → "playing"
+  const [phase, setPhase] = useState<"email" | "playing">("email");
+  const [emailInput, setEmailInput] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [emailLoading, setEmailLoading] = useState(false);
 
+  // Game state — determined once the email gate passes
+  const [game, setGame] = useState<{ win: boolean; nums: [number, number, number] } | null>(null);
+
+  // Scratch / reveal state
   const [fading, setFading] = useState(false);
   const [revealed, setRevealed] = useState(false);
   const [couponCode, setCouponCode] = useState<string | null>(null);
@@ -80,7 +72,9 @@ export function ScratchGame({ config }: { config: GameConfig }) {
   const hasRevealed = useRef(false);
   const lastPos = useRef<{ x: number; y: number } | null>(null);
 
+  // Draw the scratch surface whenever the game starts
   useEffect(() => {
+    if (phase !== "playing") return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -126,7 +120,38 @@ export function ScratchGame({ config }: { config: GameConfig }) {
       W / 2,
       H / 2 + 12,
     );
-  }, [config]);
+  }, [phase, config]);
+
+  async function handleStartGame() {
+    const trimmed = emailInput.trim();
+    if (!trimmed) { setEmailError("Enter your email address"); return; }
+    setEmailLoading(true);
+    setEmailError("");
+    const result = await checkAndRegisterPlay(trimmed);
+    if (!result.allowed) {
+      setEmailError(result.error ?? "Unable to play right now");
+      setEmailLoading(false);
+      return;
+    }
+    // Generate game outcome now
+    const win = Math.random() < config.winPercent / 100;
+    let nums: [number, number, number];
+    if (win) {
+      const n = Math.floor(Math.random() * 9) + 1;
+      nums = [n, n, n];
+    } else {
+      do {
+        nums = [
+          Math.floor(Math.random() * 9) + 1,
+          Math.floor(Math.random() * 9) + 1,
+          Math.floor(Math.random() * 9) + 1,
+        ] as [number, number, number];
+      } while (nums[0] === nums[1] && nums[1] === nums[2]);
+    }
+    setGame({ win, nums });
+    setEmailLoading(false);
+    setPhase("playing");
+  }
 
   function getCoords(e: React.PointerEvent<HTMLCanvasElement>) {
     const canvas = canvasRef.current!;
@@ -168,7 +193,7 @@ export function ScratchGame({ config }: { config: GameConfig }) {
   }
 
   function triggerReveal() {
-    if (hasRevealed.current) return;
+    if (hasRevealed.current || !game) return;
     hasRevealed.current = true;
     setFading(true);
     setTimeout(async () => {
@@ -179,7 +204,6 @@ export function ScratchGame({ config }: { config: GameConfig }) {
           const result = await createCoupon();
           setCouponCode(result.code);
         } catch {
-          // fallback: show a local code if server call fails
           const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
           let code = "MASKS-";
           for (let i = 0; i < 5; i++) code += chars[Math.floor(Math.random() * chars.length)];
@@ -225,10 +249,15 @@ export function ScratchGame({ config }: { config: GameConfig }) {
       <div className="text-center mb-8">
         <p className="text-xs uppercase tracking-[0.2em] text-terracotta font-medium mb-2">MasksOrg</p>
         <h1 className="text-4xl md:text-5xl font-bold text-charcoal mb-2">MasksOrgEry</h1>
-        <p className="text-muted text-sm">Scratch to reveal · {config.winPercent}% chance to win</p>
+        <p className="text-muted text-sm">
+          {phase === "email"
+            ? `${config.winPercent}% chance to win — one try per day`
+            : `${config.winPercent}% chance to win · Scratch to reveal`}
+        </p>
       </div>
 
       <div className="w-full max-w-sm bg-white rounded-3xl shadow-xl overflow-hidden">
+        {/* Card header */}
         <div className="bg-gradient-to-r from-terracotta via-[#b56e4f] to-[#a8654a] px-6 py-4 text-center text-white">
           <p className="text-xs uppercase tracking-widest font-semibold opacity-80 mb-0.5">Win a coupon worth</p>
           <p className="text-2xl font-bold tracking-tight">
@@ -238,108 +267,145 @@ export function ScratchGame({ config }: { config: GameConfig }) {
         </div>
 
         <div className="p-5">
-          <div className="relative rounded-2xl overflow-hidden border border-parchment" style={{ height: 200 }}>
-            {/* Numbers underneath */}
-            <div className="absolute inset-0 flex items-center justify-center gap-3 px-5 bg-gradient-to-b from-cream to-[#f0e8dd]">
-              {game.nums.map((n, i) => (
-                <div
-                  key={i}
-                  className="flex-1 rounded-2xl flex flex-col items-center justify-center gap-1.5"
-                  style={{
-                    height: 130,
-                    maxWidth: 100,
-                    background: game.win ? "linear-gradient(135deg,#fff5ef,#fde8db)" : "#f7f3ef",
-                    border: `2.5px solid ${game.win ? "#c17a5a" : "#ddd4c8"}`,
-                    boxShadow: game.win
-                      ? "0 4px 16px rgba(193,122,90,0.25)"
-                      : "inset 0 1px 3px rgba(0,0,0,0.05)",
-                  }}
-                >
-                  <span className="text-2xl leading-none">{SYMBOLS[n - 1]}</span>
-                  <span
-                    className="text-3xl font-bold leading-none"
-                    style={{ color: game.win ? "#c17a5a" : "#2d2926" }}
-                  >
-                    {n}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            {/* Canvas scratch layer */}
-            <canvas
-              ref={canvasRef}
-              width={400}
-              height={200}
-              className="absolute inset-0 touch-none select-none"
-              style={{
-                width: "100%",
-                height: "100%",
-                cursor: hasRevealed.current ? "default" : "crosshair",
-                opacity: fading ? 0 : 1,
-                transition: "opacity 0.5s ease-out",
-                pointerEvents: hasRevealed.current ? "none" : "auto",
-              }}
-              onPointerDown={onPointerDown}
-              onPointerMove={onPointerMove}
-              onPointerUp={onPointerUp}
-              onPointerLeave={onPointerUp}
-            />
-          </div>
-
-          {/* Result */}
-          {revealed && (
-            <div
-              className="mt-4 rounded-2xl p-4 text-center animate-fade-up"
-              style={{
-                background: game.win ? "linear-gradient(135deg,#fff5ef,#fde8db)" : "#faf6f1",
-                border: `2px solid ${game.win ? "#c17a5a" : "#e8ddd0"}`,
-              }}
-            >
-              {game.win ? (
-                <>
-                  <p className="text-3xl mb-1">🎉</p>
-                  <p className="text-xl font-bold text-charcoal mb-0.5">You Won!</p>
-                  <p className="text-sm text-muted mb-3">
-                    Use this code at checkout for ${config.discountUsd.toFixed(2)} · ₩{config.discountKrw.toLocaleString("ko-KR")} off
+          {/* ── Email gate ── */}
+          {phase === "email" && (
+            <div className="animate-fade-up space-y-4">
+              <p className="text-sm text-muted text-center">
+                Enter your email to play. One scratch per email per day.
+              </p>
+              <div className="space-y-2">
+                <input
+                  type="email"
+                  placeholder="your@email.com"
+                  value={emailInput}
+                  onChange={(e) => { setEmailInput(e.target.value); setEmailError(""); }}
+                  onKeyDown={(e) => e.key === "Enter" && !emailLoading && handleStartGame()}
+                  className="w-full rounded-xl border border-[#e8ddd0] px-4 py-3 text-charcoal text-sm focus:outline-none focus:border-terracotta transition-colors"
+                  autoFocus
+                />
+                {emailError && (
+                  <p className="text-red-500 text-xs flex items-center gap-1">
+                    <span>✕</span> {emailError}
                   </p>
-                  {couponLoading ? (
-                    <div className="flex justify-center py-3">
-                      <div className="w-5 h-5 rounded-full border-2 border-terracotta border-t-transparent animate-spin" />
-                    </div>
-                  ) : couponCode ? (
-                    <>
-                      <div className="flex items-center gap-2 bg-white rounded-xl border border-parchment px-4 py-3 mb-2">
-                        <code className="flex-1 text-left font-bold text-terracotta tracking-widest text-base">
-                          {couponCode}
-                        </code>
-                        <button
-                          onClick={copyCode}
-                          className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold text-white transition-colors"
-                          style={{ background: copied ? "#6b9e6b" : "#c17a5a" }}
-                        >
-                          {copied ? "Copied ✓" : "Copy"}
-                        </button>
-                      </div>
-                      <p className="text-xs text-[#bbb]">Show to staff or enter at checkout</p>
-                    </>
-                  ) : null}
-                </>
-              ) : (
-                <>
-                  <p className="text-3xl mb-1">😔</p>
-                  <p className="text-lg font-bold text-charcoal mb-0.5">Not this time!</p>
-                  <p className="text-sm text-muted">Better luck next visit!</p>
-                </>
-              )}
-
+                )}
+              </div>
               <button
-                onClick={() => window.location.reload()}
-                className="mt-4 text-sm font-semibold text-terracotta hover:text-[#a8654a] transition-colors underline underline-offset-2"
+                onClick={handleStartGame}
+                disabled={emailLoading || !emailInput.trim()}
+                className="w-full py-3 rounded-xl bg-terracotta text-white font-bold text-sm hover:bg-[#a8654a] transition-colors disabled:opacity-40 flex items-center justify-center gap-2"
               >
-                Try again →
+                {emailLoading ? (
+                  <>
+                    <span className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                    Checking…
+                  </>
+                ) : (
+                  "Play →"
+                )}
               </button>
             </div>
+          )}
+
+          {/* ── Scratch card ── */}
+          {phase === "playing" && game && (
+            <>
+              <div className="relative rounded-2xl overflow-hidden border border-parchment" style={{ height: 200 }}>
+                {/* Numbers underneath */}
+                <div className="absolute inset-0 flex items-center justify-center gap-3 px-5 bg-gradient-to-b from-cream to-[#f0e8dd]">
+                  {game.nums.map((n, i) => (
+                    <div
+                      key={i}
+                      className="flex-1 rounded-2xl flex flex-col items-center justify-center gap-1.5"
+                      style={{
+                        height: 130,
+                        maxWidth: 100,
+                        background: game.win ? "linear-gradient(135deg,#fff5ef,#fde8db)" : "#f7f3ef",
+                        border: `2.5px solid ${game.win ? "#c17a5a" : "#ddd4c8"}`,
+                        boxShadow: game.win
+                          ? "0 4px 16px rgba(193,122,90,0.25)"
+                          : "inset 0 1px 3px rgba(0,0,0,0.05)",
+                      }}
+                    >
+                      <span className="text-2xl leading-none">{SYMBOLS[n - 1]}</span>
+                      <span
+                        className="text-3xl font-bold leading-none"
+                        style={{ color: game.win ? "#c17a5a" : "#2d2926" }}
+                      >
+                        {n}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Canvas */}
+                <canvas
+                  ref={canvasRef}
+                  width={400}
+                  height={200}
+                  className="absolute inset-0 touch-none select-none"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    cursor: hasRevealed.current ? "default" : "crosshair",
+                    opacity: fading ? 0 : 1,
+                    transition: "opacity 0.5s ease-out",
+                    pointerEvents: hasRevealed.current ? "none" : "auto",
+                  }}
+                  onPointerDown={onPointerDown}
+                  onPointerMove={onPointerMove}
+                  onPointerUp={onPointerUp}
+                  onPointerLeave={onPointerUp}
+                />
+              </div>
+
+              {/* Result */}
+              {revealed && (
+                <div
+                  className="mt-4 rounded-2xl p-4 text-center animate-fade-up"
+                  style={{
+                    background: game.win ? "linear-gradient(135deg,#fff5ef,#fde8db)" : "#faf6f1",
+                    border: `2px solid ${game.win ? "#c17a5a" : "#e8ddd0"}`,
+                  }}
+                >
+                  {game.win ? (
+                    <>
+                      <p className="text-3xl mb-1">🎉</p>
+                      <p className="text-xl font-bold text-charcoal mb-0.5">You Won!</p>
+                      <p className="text-sm text-muted mb-3">
+                        Use this code at checkout for ${config.discountUsd.toFixed(2)} · ₩{config.discountKrw.toLocaleString("ko-KR")} off
+                      </p>
+                      {couponLoading ? (
+                        <div className="flex justify-center py-3">
+                          <div className="w-5 h-5 rounded-full border-2 border-terracotta border-t-transparent animate-spin" />
+                        </div>
+                      ) : couponCode ? (
+                        <>
+                          <div className="flex items-center gap-2 bg-white rounded-xl border border-parchment px-4 py-3 mb-2">
+                            <code className="flex-1 text-left font-bold text-terracotta tracking-widest text-base">
+                              {couponCode}
+                            </code>
+                            <button
+                              onClick={copyCode}
+                              className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold text-white transition-colors"
+                              style={{ background: copied ? "#6b9e6b" : "#c17a5a" }}
+                            >
+                              {copied ? "Copied ✓" : "Copy"}
+                            </button>
+                          </div>
+                          <p className="text-xs text-[#bbb]">Show to staff or enter at checkout</p>
+                        </>
+                      ) : null}
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-3xl mb-1">😔</p>
+                      <p className="text-lg font-bold text-charcoal mb-0.5">Not this time!</p>
+                      <p className="text-sm text-muted">Come back tomorrow for another try.</p>
+                    </>
+                  )}
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

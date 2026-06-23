@@ -2,7 +2,11 @@
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
-import { createSession, deleteSession } from "@/lib/session";
+import { createSession, deleteSession, getSession } from "@/lib/session";
+
+export async function getCurrentUser() {
+  return getSession();
+}
 
 export async function signup(prevState: string | null, formData: FormData) {
   const name     = String(formData.get("name")     ?? "").trim();

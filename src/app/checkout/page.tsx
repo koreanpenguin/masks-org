@@ -6,6 +6,7 @@ import { useCartStore } from "@/store/cartStore";
 import { Button } from "@/components/atoms/Button";
 import { createOrder } from "@/app/actions/order";
 import { validateCoupon, redeemCoupon } from "@/app/actions/game";
+import { getCurrentUser } from "@/app/actions/auth";
 import { discountedUnitPrice } from "@/lib/discount";
 import { useLanguageStore } from "@/store/languageStore";
 import { useTranslations } from "@/lib/translations";
@@ -35,7 +36,14 @@ export default function CheckoutPage() {
   const [couponError, setCouponError] = useState("");
   const [couponLoading, setCouponLoading] = useState(false);
 
-  useEffect(() => { document.title = "MasksOrg - Checkout"; }, []);
+  useEffect(() => {
+    document.title = "MasksOrg - Checkout";
+    getCurrentUser().then((user) => {
+      if (!user) return;
+      setFirstName((prev) => prev || user.name.split(" ")[0]);
+      setEmail((prev) => prev || user.email);
+    });
+  }, []);
 
   const discountUsd = appliedCoupon?.discountUsd ?? 0;
   const discountKrw = appliedCoupon?.discountKrw ?? 0;

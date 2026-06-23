@@ -54,3 +54,11 @@ model Coupon {
   used        Boolean  @default(false)
   createdAt   DateTime @default(now())
 }
+
+model GamePlay {
+  id       String   @id @default(cuid())
+  email    String
+  playedAt DateTime @default(now())
+
+  @@index([email])
+}
