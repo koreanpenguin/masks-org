@@ -2,6 +2,8 @@
 import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 import { createCoupon, checkAndRegisterPlay } from "@/app/actions/game";
+import { useLanguageStore } from "@/store/languageStore";
+import { t } from "@/lib/translations";
 
 const SYMBOLS = ["🍀", "⭐", "🌸", "💎", "🎯", "💫", "🌺", "🎁", "✨"];
 const CONFETTI_COLORS = ["#c17a5a","#e8a882","#ffd700","#ff6b6b","#4ecdc4","#a8654a","#f5c0a0","#ffb347","#9b59b6","#2ecc71"];
@@ -50,6 +52,9 @@ function Confetti() {
 }
 
 export function ScratchGame({ config }: { config: GameConfig }) {
+  const locale = useLanguageStore((s) => s.locale);
+  const tr = t[locale].game;
+
   // Phase: "email" → "playing"
   const [phase, setPhase] = useState<"email" | "playing">("email");
   const [emailInput, setEmailInput] = useState("");
@@ -115,24 +120,24 @@ export function ScratchGame({ config }: { config: GameConfig }) {
     ctx.textBaseline = "middle";
     ctx.fillStyle = "rgba(90,90,90,0.75)";
     ctx.font = "bold 15px system-ui, -apple-system, sans-serif";
-    ctx.fillText("✦  Scratch to Reveal  ✦", W / 2, H / 2 - 11);
+    ctx.fillText(tr.scratchLabel, W / 2, H / 2 - 11);
     ctx.font = "11px system-ui, -apple-system, sans-serif";
     ctx.fillStyle = "rgba(120,120,120,0.65)";
     ctx.fillText(
-      `${config.winPercent}% chance to win $${config.discountUsd.toFixed(0)} · ₩${config.discountKrw.toLocaleString("ko-KR")} off`,
+      tr.scratchSub(config.winPercent, config.discountUsd, config.discountKrw),
       W / 2,
       H / 2 + 12,
     );
-  }, [phase, config]);
+  }, [phase, config, tr]);
 
   async function handleStartGame() {
     const trimmed = emailInput.trim();
-    if (!trimmed) { setEmailError("Enter your email address"); return; }
+    if (!trimmed) { setEmailError(tr.emailEmpty); return; }
     setEmailLoading(true);
     setEmailError("");
     const result = await checkAndRegisterPlay(trimmed);
     if (!result.allowed) {
-      setEmailError(result.error ?? "Unable to play right now");
+      setEmailError(result.error ?? tr.emailUnable);
       setEmailLoading(false);
       return;
     }
@@ -254,19 +259,19 @@ export function ScratchGame({ config }: { config: GameConfig }) {
         <h1 className="text-4xl md:text-5xl font-bold text-charcoal mb-2">MasksOrgEry</h1>
         <p className="text-muted text-sm">
           {phase === "email"
-            ? `${config.winPercent}% chance to win — one try per day`
-            : `${config.winPercent}% chance to win · Scratch to reveal`}
+            ? tr.subtitle(config.winPercent)
+            : tr.subtitlePlaying(config.winPercent)}
         </p>
       </div>
 
       <div className="w-full max-w-sm bg-white rounded-3xl shadow-xl overflow-hidden">
         {/* Card header */}
         <div className="bg-gradient-to-r from-terracotta via-[#b56e4f] to-[#a8654a] px-6 py-4 text-center text-white">
-          <p className="text-xs uppercase tracking-widest font-semibold opacity-80 mb-0.5">Win a coupon worth</p>
+          <p className="text-xs uppercase tracking-widest font-semibold opacity-80 mb-0.5">{tr.headerLabel}</p>
           <p className="text-2xl font-bold tracking-tight">
             ${config.discountUsd.toFixed(2)} · ₩{config.discountKrw.toLocaleString("ko-KR")}
           </p>
-          <p className="text-xs opacity-70 mt-0.5">off your total order</p>
+          <p className="text-xs opacity-70 mt-0.5">{tr.headerSub}</p>
         </div>
 
         <div className="p-5">
@@ -274,12 +279,12 @@ export function ScratchGame({ config }: { config: GameConfig }) {
           {phase === "email" && (
             <div className="animate-fade-up space-y-4">
               <p className="text-sm text-muted text-center">
-                Enter your email to play. One scratch per email per day.
+                {tr.emailHint}
               </p>
               <div className="space-y-2">
                 <input
                   type="email"
-                  placeholder="your@email.com"
+                  placeholder={tr.emailPlaceholder}
                   value={emailInput}
                   onChange={(e) => { setEmailInput(e.target.value); setEmailError(""); }}
                   onKeyDown={(e) => e.key === "Enter" && !emailLoading && handleStartGame()}
@@ -300,10 +305,10 @@ export function ScratchGame({ config }: { config: GameConfig }) {
                 {emailLoading ? (
                   <>
                     <span className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
-                    Checking…
+                    {tr.checking}
                   </>
                 ) : (
-                  "Play →"
+                  tr.play
                 )}
               </button>
             </div>
@@ -373,9 +378,9 @@ export function ScratchGame({ config }: { config: GameConfig }) {
                   {game.win ? (
                     <>
                       <p className="text-3xl mb-1">🎉</p>
-                      <p className="text-xl font-bold text-charcoal mb-0.5">You Won!</p>
+                      <p className="text-xl font-bold text-charcoal mb-0.5">{tr.wonTitle}</p>
                       <p className="text-sm text-muted mb-3">
-                        Use this code at checkout for ${config.discountUsd.toFixed(2)} · ₩{config.discountKrw.toLocaleString("ko-KR")} off
+                        {tr.wonSub(config.discountUsd, config.discountKrw)}
                       </p>
                       {couponLoading ? (
                         <div className="flex justify-center py-3">
@@ -392,18 +397,18 @@ export function ScratchGame({ config }: { config: GameConfig }) {
                               className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold text-white transition-colors"
                               style={{ background: copied ? "#6b9e6b" : "#c17a5a" }}
                             >
-                              {copied ? "Copied ✓" : "Copy"}
+                              {copied ? tr.copied : tr.copy}
                             </button>
                           </div>
-                          <p className="text-xs text-[#bbb]">Show to staff or enter at checkout</p>
+                          <p className="text-xs text-[#bbb]">{tr.staffNote}</p>
                         </>
                       ) : null}
                     </>
                   ) : (
                     <>
                       <p className="text-3xl mb-1">😔</p>
-                      <p className="text-lg font-bold text-charcoal mb-0.5">Not this time!</p>
-                      <p className="text-sm text-muted">Come back tomorrow for another try.</p>
+                      <p className="text-lg font-bold text-charcoal mb-0.5">{tr.lostTitle}</p>
+                      <p className="text-sm text-muted">{tr.lostSub}</p>
                     </>
                   )}
                 </div>
@@ -414,8 +419,8 @@ export function ScratchGame({ config }: { config: GameConfig }) {
       </div>
 
       <div className="mt-8 flex gap-8 text-sm text-muted">
-        <Link href="/" className="hover:text-terracotta transition-colors">← Home</Link>
-        <Link href="/shop" className="hover:text-terracotta transition-colors">Browse Masks →</Link>
+        <Link href="/" className="hover:text-terracotta transition-colors">{tr.home}</Link>
+        <Link href="/shop" className="hover:text-terracotta transition-colors">{tr.browse}</Link>
       </div>
     </div>
   );
