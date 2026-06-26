@@ -59,9 +59,17 @@ const confirmTr = {
   en: {
     brand: "MasksOrg",
     heading: "Your Order",
-    sub: "Please review the details below before confirming.",
-    customer: "Customer",
-    walkIn: "Walk-in Customer",
+    sub: "Please fill in your details and confirm your booking.",
+    yourDetails: "Your Details",
+    namePlaceholder: "Your first name",
+    emailPlaceholder: "your@email.com",
+    sessionDate: "Session Date",
+    futureSurcharge: "+$1.00 for a future date",
+    couponLabel: "Have a coupon?",
+    couponPlaceholder: "MASKS-XXXXX",
+    couponApply: "Apply",
+    couponRemove: "Remove",
+    couponChecking: "…",
     payMethod: "Payment",
     payDetail: "Cash — pay at the time of your session",
     total: "Total",
@@ -79,9 +87,17 @@ const confirmTr = {
   ko: {
     brand: "MasksOrg",
     heading: "주문 확인",
-    sub: "아래 내용을 확인하고 예약을 완료해주세요.",
-    customer: "고객",
-    walkIn: "방문 고객",
+    sub: "정보를 입력하고 예약을 완료해주세요.",
+    yourDetails: "고객 정보",
+    namePlaceholder: "이름을 입력하세요",
+    emailPlaceholder: "이메일을 입력하세요",
+    sessionDate: "세션 날짜",
+    futureSurcharge: "미래 날짜 +$1.00",
+    couponLabel: "쿠폰이 있으신가요?",
+    couponPlaceholder: "MASKS-XXXXX",
+    couponApply: "적용",
+    couponRemove: "삭제",
+    couponChecking: "…",
     payMethod: "결제 방법",
     payDetail: "현금 — 세션 당일에 직접 지불",
     total: "합계",
@@ -112,13 +128,12 @@ export function NewOrderForm({ products }: { products: Product[] }) {
   const [loading, setLoading] = useState(false);
   const [confirmLocale, setConfirmLocale] = useState<"en" | "ko">("en");
 
-  // Date picker
+  // Date & coupon — set by the customer on the confirmation screen
   const todayStr = getTodayStr();
   const [scheduledDate, setScheduledDate] = useState(todayStr);
   const isToday = scheduledDate === todayStr;
   const dateSurcharge = isToday ? 0 : 1;
 
-  // Coupon state
   const [couponInput, setCouponInput] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
   const [couponError, setCouponError] = useState("");
@@ -127,10 +142,11 @@ export function NewOrderForm({ products }: { products: Product[] }) {
   const sessionPrice  = SESSION_OPTIONS.find((o) => o.id === session)?.price ?? 0;
   const cleanserPrice = CLEANSER_OPTIONS.find((o) => o.id === cleanser)?.price ?? 0;
   const massagePrice  = MASSAGE_OPTIONS.find((o) => o.id === massage)?.price ?? 0;
-  const basePrice = selectedProduct?.price ?? 0;
-  const subtotal = basePrice + sessionPrice + cleanserPrice + massagePrice + dateSurcharge;
-  const discountUsd = appliedCoupon?.discountUsd ?? 0;
-  const total = Math.max(0, subtotal - discountUsd);
+  const basePrice     = selectedProduct?.price ?? 0;
+  // baseSubtotal shown to employee (no date/coupon yet — customer sets those)
+  const baseSubtotal  = basePrice + sessionPrice + cleanserPrice + massagePrice;
+  // final total used for the order (includes date surcharge & coupon from customer screen)
+  const total = Math.max(0, baseSubtotal + dateSurcharge - (appliedCoupon?.discountUsd ?? 0));
 
   const allSelected = selectedProduct !== null && session !== null && cleanser !== null && massage !== null && startTime !== "";
 
@@ -160,6 +176,11 @@ export function NewOrderForm({ products }: { products: Product[] }) {
 
   function handleSendToCustomer() {
     if (!allSelected) return;
+    // Reset date/coupon so each customer starts fresh
+    setScheduledDate(getTodayStr());
+    setAppliedCoupon(null);
+    setCouponInput("");
+    setCouponError("");
     setConfirmLocale(locale as "en" | "ko");
     setPhase("confirming");
   }
@@ -187,19 +208,19 @@ export function NewOrderForm({ products }: { products: Product[] }) {
     setStartTime("");
     setCustomerName("");
     setCustomerEmail("");
-    setCouponInput("");
-    setAppliedCoupon(null);
-    setCouponError("");
     setScheduledDate(getTodayStr());
+    setAppliedCoupon(null);
+    setCouponInput("");
+    setCouponError("");
     setPhase("editing");
   }
 
-  // Full-screen customer overlay (covers header/footer entirely)
+  // Full-screen customer overlay
   if (phase === "confirming" || phase === "placed") {
     const tr = confirmTr[confirmLocale];
     return (
       <div className="fixed inset-0 z-[9999] bg-[#faf6f1] overflow-auto flex flex-col">
-        {/* Toggle locale inside the overlay */}
+        {/* Language toggle */}
         <div className="flex justify-end px-6 pt-5">
           <button
             onClick={() => setConfirmLocale((l) => l === "en" ? "ko" : "en")}
@@ -213,28 +234,40 @@ export function NewOrderForm({ products }: { products: Product[] }) {
           {phase === "confirming" ? (
             <div className="w-full max-w-sm animate-fade-up">
               {/* Brand mark */}
-              <div className="text-center mb-8">
+              <div className="text-center mb-6">
                 <p className="text-xs uppercase tracking-[0.2em] text-[#c17a5a] font-medium mb-1">{tr.brand}</p>
                 <h1 className="text-3xl font-bold text-[#2d2926]">{tr.heading}</h1>
                 <p className="text-sm text-[#8c7b6e] mt-1">{tr.sub}</p>
               </div>
 
+              {/* Customer details */}
+              <div className="bg-white rounded-2xl shadow-sm p-5 mb-4 space-y-3">
+                <p className="text-xs uppercase tracking-widest text-[#8c7b6e]">{tr.yourDetails}</p>
+                <input
+                  type="text"
+                  placeholder={tr.namePlaceholder}
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  className="w-full rounded-xl border border-[#e8ddd0] px-4 py-3 text-[#2d2926] text-sm focus:outline-none focus:border-[#c17a5a] transition-colors bg-[#faf6f1]"
+                />
+                <input
+                  type="email"
+                  placeholder={tr.emailPlaceholder}
+                  value={customerEmail}
+                  onChange={(e) => setCustomerEmail(e.target.value)}
+                  className="w-full rounded-xl border border-[#e8ddd0] px-4 py-3 text-[#2d2926] text-sm focus:outline-none focus:border-[#c17a5a] transition-colors bg-[#faf6f1]"
+                />
+              </div>
+
               {/* Order card */}
-              <div className="bg-white rounded-3xl shadow-lg overflow-hidden mb-6">
+              <div className="bg-white rounded-3xl shadow-lg overflow-hidden mb-4">
                 {/* Header stripe */}
                 <div className="bg-gradient-to-r from-[#c17a5a] via-[#b56e4f] to-[#a8654a] px-6 py-4 text-white">
                   <p className="text-xs uppercase tracking-widest font-semibold opacity-80 mb-0.5">{selectedProduct!.name}</p>
                   <p className="text-sm opacity-80">{addOns}</p>
-                  <p className="text-xs opacity-70 mt-1">📅 {scheduledDate}</p>
                 </div>
 
                 <div className="p-6 space-y-3 text-sm">
-                  {/* Customer */}
-                  <div className="flex justify-between text-[#6b4f3a]">
-                    <span className="text-[#8c7b6e]">{tr.customer}</span>
-                    <span className="font-medium">{customerName.trim() || tr.walkIn}</span>
-                  </div>
-
                   {/* Line items */}
                   <div className="flex justify-between text-[#6b4f3a]">
                     <span className="text-[#8c7b6e]">{selectedProduct!.name}</span>
@@ -285,6 +318,62 @@ export function NewOrderForm({ products }: { products: Product[] }) {
                 </div>
               </div>
 
+              {/* Date picker */}
+              <div className="bg-white rounded-2xl shadow-sm p-5 mb-4">
+                <p className="text-xs uppercase tracking-widest text-[#8c7b6e] mb-3">
+                  {tr.sessionDate}
+                  {!isToday && <span className="ml-2 normal-case text-[#c17a5a] font-semibold">{tr.futureSurcharge}</span>}
+                </p>
+                <MiniCalendar
+                  value={scheduledDate}
+                  minValue={todayStr}
+                  onChange={setScheduledDate}
+                  locale={confirmLocale}
+                />
+              </div>
+
+              {/* Coupon */}
+              <div className="bg-white rounded-2xl shadow-sm p-5 mb-4">
+                <p className="text-xs uppercase tracking-widest text-[#8c7b6e] mb-3">{tr.couponLabel}</p>
+                {appliedCoupon ? (
+                  <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-4 py-3">
+                    <div>
+                      <p className="text-sm font-bold text-green-700">🎟 {appliedCoupon.code}</p>
+                      <p className="text-xs text-green-600">−${appliedCoupon.discountUsd.toFixed(2)} off</p>
+                    </div>
+                    <button
+                      onClick={() => setAppliedCoupon(null)}
+                      className="text-xs text-[#8c7b6e] hover:text-red-500 transition-colors"
+                    >
+                      {tr.couponRemove}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        placeholder={tr.couponPlaceholder}
+                        value={couponInput}
+                        onChange={(e) => { setCouponInput(e.target.value.toUpperCase()); setCouponError(""); }}
+                        onKeyDown={(e) => e.key === "Enter" && !couponLoading && applyCoupon()}
+                        className="flex-1 rounded-xl border border-[#e8ddd0] px-4 py-3 text-[#2d2926] text-sm focus:outline-none focus:border-[#c17a5a] transition-colors bg-white"
+                      />
+                      <button
+                        onClick={applyCoupon}
+                        disabled={couponLoading || !couponInput.trim()}
+                        className="px-4 py-3 rounded-xl bg-[#c17a5a] text-white text-sm font-semibold hover:bg-[#a8654a] transition-colors disabled:opacity-40"
+                      >
+                        {couponLoading ? tr.couponChecking : tr.couponApply}
+                      </button>
+                    </div>
+                    {couponError && (
+                      <p className="text-xs text-red-500 flex items-center gap-1"><span>✕</span> {couponError}</p>
+                    )}
+                  </div>
+                )}
+              </div>
+
               {/* Confirm button */}
               <button
                 onClick={handleConfirm}
@@ -294,7 +383,7 @@ export function NewOrderForm({ products }: { products: Product[] }) {
                 {loading && (
                   <span className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
                 )}
-                {loading ? tr.confirming : tr.confirm}
+                {loading ? tr.confirming : `${tr.confirm} — $${total.toFixed(2)}`}
               </button>
 
               {/* Back link for employee */}
@@ -306,7 +395,7 @@ export function NewOrderForm({ products }: { products: Product[] }) {
               </button>
             </div>
           ) : (
-            /* Success — shown after customer confirms */
+            /* Success */
             <div className="w-full max-w-sm text-center animate-fade-up">
               <div className="w-20 h-20 rounded-full bg-[#f0e8dd] flex items-center justify-center mx-auto mb-6">
                 <svg width="36" height="36" viewBox="0 0 44 44" fill="none">
@@ -323,7 +412,6 @@ export function NewOrderForm({ products }: { products: Product[] }) {
                   </div>
                 ))}
               </div>
-              {/* Employee controls */}
               <div className="flex gap-3">
                 <Button onClick={reset} className="flex-1">{tr.newOrder}</Button>
                 <Button variant="outline" onClick={() => router.push("/admin")} className="flex-1">{tr.backAdmin}</Button>
@@ -405,78 +493,6 @@ export function NewOrderForm({ products }: { products: Product[] }) {
             </div>
           </section>
 
-          {/* Customer info */}
-          <section>
-            <p className="text-xs uppercase tracking-widest text-[#8c7b6e] mb-3">Customer Info <span className="normal-case text-[#c8bfb8]">(optional)</span></p>
-            <div className="space-y-3">
-              <input
-                type="text"
-                placeholder="Customer name"
-                value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
-                className={inputClass}
-              />
-              <input
-                type="email"
-                placeholder="Customer email"
-                value={customerEmail}
-                onChange={(e) => setCustomerEmail(e.target.value)}
-                className={inputClass}
-              />
-            </div>
-          </section>
-
-          {/* Session date */}
-          <section>
-            <p className="text-xs uppercase tracking-widest text-[#8c7b6e] mb-3">
-              Session Date
-              {!isToday && <span className="ml-2 normal-case text-[#c17a5a] font-semibold">+$1.00 future date</span>}
-            </p>
-            <MiniCalendar value={scheduledDate} minValue={todayStr} onChange={setScheduledDate} locale="en" />
-          </section>
-
-          {/* Coupon */}
-          <section>
-            <p className="text-xs uppercase tracking-widest text-[#8c7b6e] mb-3">Coupon Code <span className="normal-case text-[#c8bfb8]">(optional)</span></p>
-            {appliedCoupon ? (
-              <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-4 py-3">
-                <div>
-                  <p className="text-sm font-bold text-green-700">🎟 {appliedCoupon.code}</p>
-                  <p className="text-xs text-green-600">−${appliedCoupon.discountUsd.toFixed(2)} off</p>
-                </div>
-                <button
-                  onClick={() => setAppliedCoupon(null)}
-                  className="text-xs text-[#8c7b6e] hover:text-red-500 transition-colors"
-                >
-                  Remove
-                </button>
-              </div>
-            ) : (
-              <div className="space-y-2">
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="MASKS-XXXXX"
-                    value={couponInput}
-                    onChange={(e) => { setCouponInput(e.target.value.toUpperCase()); setCouponError(""); }}
-                    onKeyDown={(e) => e.key === "Enter" && !couponLoading && applyCoupon()}
-                    className={`${inputClass} flex-1`}
-                  />
-                  <button
-                    onClick={applyCoupon}
-                    disabled={couponLoading || !couponInput.trim()}
-                    className="px-4 py-3 rounded-xl bg-[#c17a5a] text-white text-sm font-semibold hover:bg-[#a8654a] transition-colors disabled:opacity-40"
-                  >
-                    {couponLoading ? "…" : "Apply"}
-                  </button>
-                </div>
-                {couponError && (
-                  <p className="text-xs text-red-500 flex items-center gap-1"><span>✕</span> {couponError}</p>
-                )}
-              </div>
-            )}
-          </section>
-
           {/* Summary */}
           {allSelected && (
             <section className="bg-white rounded-2xl shadow-sm p-6 space-y-2 text-sm text-[#6b4f3a]">
@@ -498,22 +514,11 @@ export function NewOrderForm({ products }: { products: Product[] }) {
                   <span>Premium Massage</span><span>+${massagePrice.toFixed(2)}</span>
                 </div>
               )}
-              {!isToday && (
-                <div className="flex justify-between text-[#8c7b6e]">
-                  <span>📅 Future date ({scheduledDate})</span>
-                  <span>+$1.00</span>
-                </div>
-              )}
-              {appliedCoupon && (
-                <div className="flex justify-between text-green-600 font-medium">
-                  <span>🎟 {appliedCoupon.code}</span>
-                  <span>−${appliedCoupon.discountUsd.toFixed(2)}</span>
-                </div>
-              )}
               <div className="border-t border-[#e8ddd0] pt-3 flex justify-between font-bold text-[#2d2926] text-lg">
                 <span>Total</span>
-                <span>${total.toFixed(2)}</span>
+                <span>${baseSubtotal.toFixed(2)}</span>
               </div>
+              <p className="text-xs text-[#c8bfb8]">Name, date & coupon filled in by customer</p>
             </section>
           )}
 
@@ -523,7 +528,7 @@ export function NewOrderForm({ products }: { products: Product[] }) {
             disabled={!allSelected}
             onClick={handleSendToCustomer}
           >
-            {allSelected ? `Send to Customer → $${total.toFixed(2)}` : "Select all options"}
+            {allSelected ? `Send to Customer → $${baseSubtotal.toFixed(2)}` : "Select all options"}
           </Button>
         </>
       )}
