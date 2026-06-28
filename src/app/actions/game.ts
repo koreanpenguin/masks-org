@@ -38,7 +38,7 @@ export async function checkAndRegisterPlay(rawEmail: string): Promise<{
   return { allowed: true };
 }
 
-export async function createCoupon(): Promise<{ code: string; discountUsd: number; discountKrw: number }> {
+export async function createCoupon(winnerEmail?: string): Promise<{ code: string; discountUsd: number; discountKrw: number }> {
   const config = await getConfig();
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let suffix = "";
@@ -46,7 +46,7 @@ export async function createCoupon(): Promise<{ code: string; discountUsd: numbe
   const code = `MASKS-${suffix}`;
 
   await prisma.coupon.create({
-    data: { code, discountUsd: config.discountUsd, discountKrw: config.discountKrw },
+    data: { code, discountUsd: config.discountUsd, discountKrw: config.discountKrw, winnerEmail: winnerEmail?.trim().toLowerCase() || null },
   });
 
   return { code, discountUsd: config.discountUsd, discountKrw: config.discountKrw };

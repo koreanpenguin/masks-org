@@ -54,6 +54,7 @@ model Coupon {
   discountKrw Int
   used        Boolean  @default(false)
   createdAt   DateTime @default(now())
+  winnerEmail String?
 }
 
 model GamePlay {

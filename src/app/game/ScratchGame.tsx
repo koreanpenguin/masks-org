@@ -209,7 +209,7 @@ export function ScratchGame({ config }: { config: GameConfig }) {
       if (game.win) {
         setCouponLoading(true);
         try {
-          const result = await createCoupon();
+          const result = await createCoupon(emailInput);
           setCouponCode(result.code);
         } catch {
           const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
