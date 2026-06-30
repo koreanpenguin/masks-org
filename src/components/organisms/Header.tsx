@@ -110,7 +110,7 @@ export function Header({ user }: { user: SessionUser | null }) {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-8 text-sm text-bark">
+          <nav className="hidden lg:flex items-center gap-8 text-sm text-bark">
             <Link href="/" className={navLinkClass}>{tr.nav.home}</Link>
             <Link href="/shop" className={navLinkClass}>{tr.nav.shop}</Link>
             {user ? (
@@ -129,8 +129,8 @@ export function Header({ user }: { user: SessionUser | null }) {
             )}
           </nav>
 
-          {/* Mobile icon nav */}
-          <nav className="flex md:hidden items-center gap-1 text-charcoal">
+          {/* Icon nav (mobile + mid-size) */}
+          <nav className="flex lg:hidden items-center gap-1 text-charcoal">
             <Link href="/" title={tr.nav.home} className="p-2 hover:text-terracotta transition-colors">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" /><path d="M9 21V12h6v9" />
@@ -173,7 +173,7 @@ export function Header({ user }: { user: SessionUser | null }) {
             <LanguageSwitcher compact />
           </nav>
 
-          <div className="hidden md:block">
+          <div className="hidden lg:block">
             <LanguageSwitcher />
           </div>
 
