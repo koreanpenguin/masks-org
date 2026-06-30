@@ -170,7 +170,7 @@ export function Header({ user }: { user: SessionUser | null }) {
                 </svg>
               </Link>
             )}
-            <LanguageSwitcher />
+            <LanguageSwitcher compact />
           </nav>
 
           <div className="hidden md:block">
