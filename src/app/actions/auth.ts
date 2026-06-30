@@ -4,6 +4,27 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 import { createSession, deleteSession, getSession } from "@/lib/session";
 
+async function sendWelcomeEmail(name: string, email: string) {
+  const key = process.env.WEB3FORMS_ACCESS_KEY;
+  if (!key) return;
+  try {
+    await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        access_key: key,
+        subject: "Welcome to MasksOrg!",
+        from_name: "MasksOrg",
+        name,
+        email,
+        message: `Hi ${name},\n\nWelcome to MasksOrg! Your account has been created successfully.\n\nYou can now browse our masks, book sessions, and play MasksOrgEry for a chance to win discount coupons.\n\nSee you soon,\nThe MasksOrg Team`,
+      }),
+    });
+  } catch {
+    // Don't block signup if email fails
+  }
+}
+
 export async function getCurrentUser() {
   return getSession();
 }
@@ -24,7 +45,10 @@ export async function signup(prevState: string | null, formData: FormData) {
   const hashed = await bcrypt.hash(password, 12);
   const user   = await prisma.user.create({ data: { name, email, password: hashed } });
 
-  await createSession({ id: user.id, name: user.name, email: user.email });
+  await Promise.all([
+    createSession({ id: user.id, name: user.name, email: user.email }),
+    sendWelcomeEmail(user.name, user.email),
+  ]);
   redirect("/");
 }
 
