@@ -5,7 +5,7 @@ export const t = {
     nav: {
       home: "Home",
       shop: "Shop",
-      orders: "My Orders",
+      orders: "Account",
       admin: "Admin",
       signOut: "Sign Out",
       login: "Login",
@@ -253,7 +253,7 @@ export const t = {
     nav: {
       home: "홈",
       shop: "쇼핑",
-      orders: "내 주문",
+      orders: "계정",
       admin: "관리자",
       signOut: "로그아웃",
       login: "로그인",
