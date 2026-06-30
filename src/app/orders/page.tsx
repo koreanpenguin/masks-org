@@ -7,7 +7,7 @@ import { getLocale } from "@/lib/locale";
 import type { OrderItem } from "@/app/actions/order";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "My Account" };
+export const metadata: Metadata = { title: "Account" };
 
 export default async function AccountPage() {
   const session = await getSession();
