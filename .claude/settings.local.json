@@ -2,7 +2,14 @@
   "permissions": {
     "allow": [
       "Skill(update-config)",
-      "Skill(update-config:*)"
+      "Skill(update-config:*)",
+      "mcp__visualize__read_me",
+      "mcp__visualize__show_widget",
+      "mcp__Claude_Preview__preview_start",
+      "mcp__Claude_in_Chrome__computer",
+      "mcp__Claude_in_Chrome__navigate",
+      "Bash(pbcopy)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp"
     ]
   },
   "enabledPlugins": {
